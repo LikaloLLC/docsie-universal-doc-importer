@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from swag_auth.models import SwaggerStorage
 
-from universal_doc_importer.registry import registry
+from universal_doc_importer.registry import connector_registry
 
 
 class GithubRepoMapView(APIView):
@@ -15,17 +15,24 @@ class GithubRepoMapView(APIView):
             raise Http404
 
     def get_importer(self, connector_id):
-        return registry.by_id(connector_id)
+        connector_registry.get_list()
+        return connector_registry.by_id(connector_id)
 
     def get(self, request) -> 'Response':
         # Get repo map and return it to the user
         swagger_storage = self.get_storage(request)
         connector_id = swagger_storage.token.connector
-        provider = self.get_importer(connector_id)
-        importer = provider(swagger_storage.token)
+        importer_cls = self.get_importer(connector_id)
+
+        importer = importer_cls(swagger_storage.token.token)
         status = 200
         try:
-            data = importer.get_repo_map(swagger_storage.url, extensions=request.GET.get('extensions', ['md']))
+            extensions_str = self.request.query_params.get('extensions')
+            if extensions_str:
+                extensions = extensions_str.replace(' ', '').split(',')
+            else:
+                extensions = ['md']
+            data = importer.get_repo_map(swagger_storage.url, extensions=extensions)
         except Exception as e:
             data = {'error': e}
             status = 400

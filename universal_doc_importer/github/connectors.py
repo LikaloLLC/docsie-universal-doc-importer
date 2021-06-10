@@ -26,7 +26,7 @@ class GithubImporter(GithubAPIConnector):
 
         return repo_name
 
-    def get_repo_map(self, url, extensions='md'):
+    def get_repo_map(self, url, extensions):
         repo_name = self._parse_url(url=url)
         folder_name = repo_name.split('/')[1]
         repo = self.get_user_repo(repo_name)
@@ -37,11 +37,14 @@ class GithubImporter(GithubAPIConnector):
             file_content = contents.pop(0)
             if file_content.type == "dir":
                 contents.extend(repo.get_contents(file_content.path))
+
             records.append(file_content.path)
 
         myFile = FileSystem(folder_name)
-        for record in records[1:]:
-            myFile.addChild(record)
+        for record in records:
+            extension = record.split('.')[-1]
+            if extension in extensions:
+                myFile.addChild(record)
         return myFile.makeDict()
 
 

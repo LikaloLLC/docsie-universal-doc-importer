@@ -6,8 +6,8 @@ class CustomConnectorRegistry(ConnectorRegistry):
         self.load()
         return [connector_cls for connector_cls in self.connector_map.values()]
 
-    def by_id(self, provider_id):
-        return self.connector_map[provider_id]
+    def by_id(self, connector_id):
+        return self.connector_map[connector_id]
 
 
-registry = ConnectorRegistry('universal_doc_importer')
+connector_registry = CustomConnectorRegistry('universal_doc_importer')
