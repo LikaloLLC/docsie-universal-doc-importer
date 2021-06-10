@@ -6,6 +6,8 @@ from universal_doc_importer.file_system import FileSystem
 
 
 class GithubImporter(GithubAPIConnector):
+    provider_id = 'github'
+
     def _parse_url(self, url: str) -> str:
         uri = urlparse(url)
         urls = uri.path
@@ -41,3 +43,6 @@ class GithubImporter(GithubAPIConnector):
         for record in records[1:]:
             myFile.addChild(record)
         return myFile.makeDict()
+
+
+connector_classes = [GithubImporter]
