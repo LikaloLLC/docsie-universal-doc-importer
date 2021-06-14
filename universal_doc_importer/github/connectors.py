@@ -1,3 +1,4 @@
+import os
 from urllib.parse import urlparse
 
 from swag_auth.github.connectors import GithubAPIConnector
@@ -7,8 +8,6 @@ from universal_doc_importer.utils import filter_by_extension
 
 
 class GithubImporter(GithubAPIConnector):
-    provider_id = 'github'
-
     def _parse_url(self, url: str) -> str:
         uri = urlparse(url)
         urls = uri.path
@@ -33,19 +32,17 @@ class GithubImporter(GithubAPIConnector):
         repo = self.get_user_repo(repo_name)
 
         contents = repo.get_contents("")
-        records = []
-        myFile = FileSystem(folder_name)
+        mapping = FileSystem(folder_name)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
                 contents.extend(repo.get_contents(file_content.path))
 
-            records.append(file_content.path)
-            extension = file_content.path.split('.')[-1]
-            if extension in extensions or file_content.path == extension:
-                myFile.addChild(file_content.path)
-        result = filter_by_extension(myFile.makeDict(), extensions)
-        return result
+            head = os.path.splitext(file_content.path)[0]
+            extension = os.path.splitext(file_content.path)[1].replace('.', '')
+            if extension in extensions or file_content.path == head:
+                mapping.addChild(file_content.path)
+        return filter_by_extension(mapping.makeDict(), extensions)
 
 
 connector_classes = [GithubImporter]
