@@ -10,8 +10,9 @@ from universal_doc_importer.github.connectors import GithubImporter
 class GithubRepoMapView(APIView):
     def get_storage(self, request) -> 'SwaggerStorage':
         try:
-            return SwaggerStorage.objects.filter(user=request.user).last()
-        except ObjectDoesNotExist:
+            url = self.request.query_params['url']
+            return SwaggerStorage.objects.filter(user=request.user, url=url).last()
+        except (ObjectDoesNotExist, KeyError):
             raise Http404
 
     def get(self, request) -> 'Response':
@@ -22,7 +23,7 @@ class GithubRepoMapView(APIView):
         try:
             data = importer.get_repo_map(swagger_storage.url, extensions=request.GET.get('extensions', ['md']))
         except Exception as e:
-            data = {'error':e}
+            data = {'error': e}
             status = 400
 
         return Response(data=data, status=status)
