@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from swag_auth.github.connectors import GithubAPIConnector
 
 from universal_doc_importer.file_system import FileSystem
+from universal_doc_importer.utils import filter_by_extension
 
 
 class GithubImporter(GithubAPIConnector):
@@ -33,19 +34,18 @@ class GithubImporter(GithubAPIConnector):
 
         contents = repo.get_contents("")
         records = []
+        myFile = FileSystem(folder_name)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
                 contents.extend(repo.get_contents(file_content.path))
 
             records.append(file_content.path)
-
-        myFile = FileSystem(folder_name)
-        for record in records:
-            extension = record.split('.')[-1]
-            if extension in extensions:
-                myFile.addChild(record)
-        return myFile.makeDict()
+            extension = file_content.path.split('.')[-1]
+            if extension in extensions or file_content.path == extension:
+                myFile.addChild(file_content.path)
+        result = filter_by_extension(myFile.makeDict(), extensions)
+        return result
 
 
 connector_classes = [GithubImporter]

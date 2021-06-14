@@ -1,5 +1,6 @@
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from swag_auth.models import SwaggerStorage
@@ -10,8 +11,14 @@ from universal_doc_importer.registry import connector_registry
 class GithubRepoMapView(APIView):
     def get_storage(self, request) -> 'SwaggerStorage':
         try:
-            return SwaggerStorage.objects.filter(user=request.user).last()
-        except ObjectDoesNotExist:
+
+            url = self.request.query_params['url']
+            swagger = SwaggerStorage.objects.filter(user=request.user, url=url).last()
+            if swagger is None:
+                raise Http404
+            return swagger
+
+        except (ObjectDoesNotExist, MultiValueDictKeyError):
             raise Http404
 
     def get_importer(self, connector_id):
