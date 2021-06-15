@@ -38,8 +38,8 @@ def get_repo_content_path(data: dict):
     :rtype: list:
     """
     paths = []
-    for key in data.keys():
-        for file in data[key]:
+    for key, files in data.items():
+        for file in files:
             if isinstance(file, dict):
                 for k, v in file.items():
                     s = get_repo_content_path(file)
