@@ -49,7 +49,6 @@ class GithubImporter(GithubAPIConnector):
     def get_files(self, repo_map):
         repo_name = list(repo_map)[0]
         repo_name = '/'.join(repo_name.split('-', 1)[:2])
-        print(repo_name)
         urls = get_repo_content_path(repo_map)
         repo = self.get_user_repo(repo_name)
         for url in urls:
