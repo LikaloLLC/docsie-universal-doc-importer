@@ -8,7 +8,7 @@ from swag_auth.models import SwaggerStorage
 from universal_doc_importer.registry import connector_registry
 
 
-class GithubRepoMapView(APIView):
+class RepoMapView(APIView):
     def get_storage(self, url) -> 'SwaggerStorage':
         try:
             swagger = SwaggerStorage.objects.filter(user=self.request.user, url=url).last()
