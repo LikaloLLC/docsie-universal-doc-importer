@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from swag_auth.github.connectors import GithubAPIConnector
 
 from universal_doc_importer.file_system import FileSystem
-from universal_doc_importer.utils import filter_by_extension, get_repo_content_path
+from universal_doc_importer.utils import get_repo_content_path
 
 
 class GithubImporter(GithubAPIConnector):
@@ -46,7 +46,7 @@ class GithubImporter(GithubAPIConnector):
             if extension in extensions or file_content.path == head:
                 mapping.addChild(file_content.path)
 
-        return filter_by_extension(mapping.makeDict(), extensions)
+        return mapping.filter_by_extension(mapping.makeDict(), extensions)
 
     def get_files(self, repo_map):
         repo_name = list(repo_map)[0]
