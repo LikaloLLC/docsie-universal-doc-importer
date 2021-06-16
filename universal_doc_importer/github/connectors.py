@@ -45,8 +45,10 @@ class GithubImporter(GithubAPIConnector):
 
             if extension in extensions or file_content.path == head:
                 mapping.addChild(file_content.path)
-
-        return filter_by_extension(mapping.makeDict(), extensions)
+        result = filter_by_extension(mapping.makeDict(), extensions)
+        if len(result) == 0:
+            result[repo_name] = []
+        return result
 
     def get_files(self, repo_map):
         repo_name = list(repo_map)[0]
