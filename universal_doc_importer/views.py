@@ -9,11 +9,9 @@ from universal_doc_importer.registry import connector_registry
 
 
 class GithubRepoMapView(APIView):
-    def get_storage(self, request) -> 'SwaggerStorage':
+    def get_storage(self, url) -> 'SwaggerStorage':
         try:
-
-            url = self.request.query_params['url']
-            swagger = SwaggerStorage.objects.filter(user=request.user, url=url).last()
+            swagger = SwaggerStorage.objects.filter(user=self.request.user, url=url).last()
             if swagger is None:
                 raise Http404
             return swagger
@@ -27,7 +25,8 @@ class GithubRepoMapView(APIView):
 
     def get(self, request) -> 'Response':
         # Get repo map and return it to the user
-        swagger_storage = self.get_storage(request)
+        url = self.request.query_params['url']
+        swagger_storage = self.get_storage(url)
         connector_id = swagger_storage.token.connector
         importer_cls = self.get_importer(connector_id)
 
