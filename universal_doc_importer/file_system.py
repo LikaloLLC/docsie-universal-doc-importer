@@ -38,10 +38,9 @@ class FileSystem():
             print("\t" * depth + "}")
 
     def makeDict(self):
+        dictionary = {self.name: []}
         if len(self.children) > 0:
-            dictionary = {self.name: []}
             for child in self.children:
                 dictionary[self.name].append(child.makeDict())
-            return dictionary
-        else:
-            return self.name
+
+        return dictionary

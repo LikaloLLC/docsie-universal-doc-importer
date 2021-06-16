@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'encrypted_model_fields',
 
     # swag_auth
-    'swag_auth.apps.SwagAuthConfig',
+    'swag_auth',
 
     # my apps
     'universal_doc_importer.apps.UniversalDocImporterConfig'

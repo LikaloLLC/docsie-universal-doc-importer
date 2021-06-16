@@ -40,10 +40,12 @@ class GithubImporter(GithubAPIConnector):
             if file_content.type == "dir":
                 contents.extend(repo.get_contents(file_content.path))
 
-            head = os.path.splitext(file_content.path)[0]
-            extension = os.path.splitext(file_content.path)[1].replace('.', '')
+            head, extension = os.path.splitext(file_content.path)
+            extension = extension.replace('.', '')
+
             if extension in extensions or file_content.path == head:
                 mapping.addChild(file_content.path)
+
         return filter_by_extension(mapping.makeDict(), extensions)
 
     def get_files(self, repo_map):

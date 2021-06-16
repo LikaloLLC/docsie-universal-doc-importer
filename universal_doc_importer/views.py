@@ -41,7 +41,7 @@ class GithubRepoMapView(APIView):
                 extensions = ['md']
             data = importer.get_repo_map(swagger_storage.url, extensions=extensions)
         except Exception as e:
-            data = {'error': e}
+            data = {'error': str(e)}
             status = 400
 
         return Response(data=data, status=status)
