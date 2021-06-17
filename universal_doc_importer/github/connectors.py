@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from swag_auth.github.connectors import GithubAPIConnector
 
 from universal_doc_importer.file_system import FileSystem
-from universal_doc_importer.utils import filter_by_extension, get_repo_content_path
+from universal_doc_importer.utils import get_repo_content_path
 
 
 class GithubImporter(GithubAPIConnector):
@@ -13,9 +13,9 @@ class GithubImporter(GithubAPIConnector):
     def _parse_url(self, url: str) -> str:
         uri = urlparse(url)
         urls = uri.path
-        if urls.count('blob'):
+        if 'blob' in urls:
             div_str = 'blob'
-        elif urls.count('tree'):
+        elif 'tree' in urls:
             div_str = 'tree'
         else:
             urls = urls + '/blob/'
@@ -23,8 +23,7 @@ class GithubImporter(GithubAPIConnector):
         repo_name, path = urls.split(div_str)
 
         repo_name, branch = repo_name.strip('/'), path.split('/')[1]
-        repo_name = repo_name.strip('-')
-        repo_name = repo_name.strip('/')
+        repo_name = repo_name.strip('-').strip('/')
 
         return repo_name
 
@@ -34,7 +33,7 @@ class GithubImporter(GithubAPIConnector):
         repo = self.get_user_repo(repo_name)
 
         contents = repo.get_contents("")
-        mapping = FileSystem(folder_name)
+        mapping = FileSystem(extensions=extensions, filePath=folder_name)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
@@ -45,10 +44,7 @@ class GithubImporter(GithubAPIConnector):
 
             if extension in extensions or file_content.path == head:
                 mapping.addChild(file_content.path)
-        result = filter_by_extension(mapping.makeDict(), extensions)
-        if len(result) == 0:
-            result[repo_name] = []
-        return result
+        return mapping.buildDict()
 
     def get_files(self, repo_map):
         repo_name = list(repo_map)[0]
