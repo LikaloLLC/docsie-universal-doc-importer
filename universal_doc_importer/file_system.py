@@ -1,7 +1,7 @@
 class FileSystem():
     def __init__(self, extensions, filePath=None):
         self.children = []
-        self.extensions = extensions
+        self.extensions = extensions or ['md']
         if filePath != None:
             try:
                 self.name, child = filePath.split("/", 1)
@@ -48,7 +48,7 @@ class FileSystem():
                 child.printAllChildren(depth)
             print("\t" * depth + "}")
 
-    def buildDict(self):
+    def _buildDict(self):
         """
         Recursive function that Built dict from file names of the repo:
         :param: None:
@@ -58,7 +58,7 @@ class FileSystem():
         if len(self.children) > 0:
             dictionary = {self.name: []}
             for child in self.children:
-                dictionary[self.name].append(child.buildDict())
+                dictionary[self.name].append(child._buildDict())
             return dictionary
         else:
             return self.name
@@ -72,7 +72,7 @@ class FileSystem():
         """
         #  Get data from buildDict method and check if data is empty
         #  it returns data like this { repo_name : []}
-        data = self.buildDict()
+        data = self._buildDict()
         repo_name = '/'.join(list(data)[0].split('-')[:2])
         result = self.filter_by_extension(data)
         if result == {}:
