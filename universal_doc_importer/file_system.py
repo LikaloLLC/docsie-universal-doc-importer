@@ -77,6 +77,11 @@ class FileSystem():
         result = self.filter_by_extension(data)
         if result == {}:
             result[repo_name] = []
+        else:
+            answer = dict()
+            for key, value in result.items():
+                answer[repo_name] = value
+            result = answer
         return result
 
     def filter_by_extension(self, data: dict) -> dict:
