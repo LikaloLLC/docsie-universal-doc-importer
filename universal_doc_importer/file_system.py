@@ -1,5 +1,5 @@
 class FileSystem():
-    def __init__(self, extensions, filePath=None):
+    def __init__(self, filePath=None, extensions=None):
         self.children = []
         self.extensions = extensions or ['md']
         if filePath != None:
