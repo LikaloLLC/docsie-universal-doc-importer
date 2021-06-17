@@ -63,7 +63,7 @@ class FileSystem():
         else:
             return self.name
 
-    def makeDict(self):
+    def buildDict(self):
         """
         Make filtered data
         :param: None:
