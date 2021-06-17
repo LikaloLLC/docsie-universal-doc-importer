@@ -6,7 +6,7 @@ from typing import List
 
 
 class RepositoryMap(Mapping):
-    """Represents JSON view of a git repository file structure.
+    """Represents a JSON view of a git repository file structure.
 
     >>> repo_map = RepositoryMap('repo')
     >>> repo_map.add_path('path/to/file.txt')
@@ -38,14 +38,14 @@ class RepositoryMap(Mapping):
         """Add a path to the repository map."""
         *path_bits, file = Path(path).parts
 
-        # Do not add a path if the extension is not listed in allowed extensions
+        # Do not add the path if its extension is not listed in allowed extensions
         extension = os.path.splitext(file)[1][1:]
         if extension not in self.filter_extensions:
             return
 
         current_path = self[self.repo_name]
         for bit in path_bits:
-            # Get the first dict, which contains a `bit` as a key.
+            # Get the first dict which contains a `bit` key.
             folder = next(
                 (folder for index, folder in enumerate(current_path)
                  if isinstance(folder, dict) and bit in folder),
@@ -81,10 +81,10 @@ class RepositoryMap(Mapping):
         return f"<{self.__class__.__name__} at {hex(id(self))}> JSON: {self}"
 
     def as_dict(self) -> dict:
-        """Return the copy of itself.
+        """Return the repo map as a dictionary.
 
         It can be useful in some cases,
-        where :class:`Mapping` is not supported or not acts like a default dict,
+        where the :class:`Mapping` is not supported or does not act like a default dict,
         but calling a `dict()` function is unwanted due to performance issues.
         """
         return self._repo_map.copy()
