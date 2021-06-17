@@ -10,6 +10,11 @@ class FileSystem():
                 self.name = filePath
 
     def addChild(self, filePath):
+        """
+        Recursive function that bind files to folder
+        :param: filePath:
+        :return: None:
+        """
         try:
             thisLevel, nextLevel = filePath.split("/", 1)
             try:
@@ -30,6 +35,11 @@ class FileSystem():
         return self.children
 
     def printAllChildren(self, depth=-1):
+        """
+        Print data pretty
+        :param depth, default=-1
+        :return: data:
+        """
         depth += 1
         print("\t" * depth + "Name: " + self.name)
         if len(self.children) > 0:
@@ -39,16 +49,35 @@ class FileSystem():
             print("\t" * depth + "}")
 
     def buildDict(self):
+        """
+        Recursive function that Built dict from file names of the repo:
+        :param: None:
+        :return: data:
+        :rtype: dict:
+        """
         if len(self.children) > 0:
             dictionary = {self.name: []}
             for child in self.children:
                 dictionary[self.name].append(child.buildDict())
-            return self.filter_by_extension(dictionary)
+            return dictionary
         else:
             return self.name
 
     def makeDict(self):
-        return self.filter_by_extension(self.buildDict())
+        """
+        Make filtered data
+        :param: None:
+        :return: data:
+        :rtype: dict:
+        """
+        #  Get data from buildDict method and check if data is empty
+        #  it returns data like this { repo_name : []}
+        data = self.buildDict()
+        repo_name = '/'.join(list(data)[0].split('-')[:2])
+        result = self.filter_by_extension(data)
+        if result == {}:
+            result[repo_name] = []
+        return result
 
     def filter_by_extension(self, data: dict) -> dict:
         """
