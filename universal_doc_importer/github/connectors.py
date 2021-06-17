@@ -34,7 +34,7 @@ class GithubImporter(GithubAPIConnector):
         repo = self.get_user_repo(repo_name)
 
         contents = repo.get_contents("")
-        mapping = FileSystem(folder_name)
+        mapping = FileSystem(extensions=extensions, filePath=folder_name)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
@@ -45,8 +45,7 @@ class GithubImporter(GithubAPIConnector):
 
             if extension in extensions or file_content.path == head:
                 mapping.addChild(file_content.path)
-
-        return mapping.filter_by_extension(mapping.makeDict(), extensions)
+        return mapping.makeDict()
 
     def get_files(self, repo_map):
         repo_name = list(repo_map)[0]

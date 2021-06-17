@@ -1,10 +1,11 @@
 class FileSystem():
-    def __init__(self, filePath=None):
+    def __init__(self, extensions, filePath=None):
         self.children = []
+        self.extensions = extensions
         if filePath != None:
             try:
                 self.name, child = filePath.split("/", 1)
-                self.children.append(FileSystem(child))
+                self.children.append(FileSystem(extensions=self.extensions, filePath=child))
             except (ValueError):
                 self.name = filePath
 
@@ -15,15 +16,15 @@ class FileSystem():
                 if thisLevel == self.name:
                     thisLevel, nextLevel = nextLevel.split("/", 1)
             except (ValueError):
-                self.children.append(FileSystem(nextLevel))
+                self.children.append(FileSystem(extensions=self.extensions, filePath=nextLevel))
                 return
             for child in self.children:
                 if thisLevel == child.name:
-                    child.addChild(nextLevel)
+                    child.addChild(filePath=nextLevel)
                     return
-            self.children.append(FileSystem(nextLevel))
+            self.children.append(FileSystem(extensions=self.extensions, filePath=nextLevel))
         except (ValueError):
-            self.children.append(FileSystem(filePath))
+            self.children.append(FileSystem(extensions=self.extensions, filePath=filePath))
 
     def getChildren(self):
         return self.children
@@ -37,15 +38,19 @@ class FileSystem():
                 child.printAllChildren(depth)
             print("\t" * depth + "}")
 
-    def makeDict(self):
-        dictionary = {self.name: []}
+    def buildDict(self):
         if len(self.children) > 0:
+            dictionary = {self.name: []}
             for child in self.children:
-                dictionary[self.name].append(child.makeDict())
+                dictionary[self.name].append(child.buildDict())
+            return self.filter_by_extension(dictionary)
+        else:
+            return self.name
 
-        return dictionary
+    def makeDict(self):
+        return self.filter_by_extension(self.buildDict())
 
-    def filter_by_extension(self, data: dict, extensions: list) -> dict:
+    def filter_by_extension(self, data: dict) -> dict:
         """
         Return filtered data by extensions
         :param data, extensions:
@@ -57,12 +62,12 @@ class FileSystem():
             ext_files = []
             for value in values:
                 if isinstance(value, dict):
-                    res = self.filter_by_extension(value, extensions=extensions)
+                    res = self.filter_by_extension(value)
                     for k, v in value.items():
                         ext_files.append(res)
                 else:
                     cnt = 0
-                    for ext in extensions:
+                    for ext in self.extensions:
                         if value.endswith(ext):
                             cnt += 1
                             ext_files.append(value)
