@@ -13,9 +13,9 @@ class GithubImporter(GithubAPIConnector):
     def _parse_url(self, url: str) -> str:
         uri = urlparse(url)
         urls = uri.path
-        if urls.count('blob'):
+        if 'blob' in urls:
             div_str = 'blob'
-        elif urls.count('tree'):
+        elif 'tree' in urls:
             div_str = 'tree'
         else:
             urls = urls + '/blob/'
@@ -23,8 +23,7 @@ class GithubImporter(GithubAPIConnector):
         repo_name, path = urls.split(div_str)
 
         repo_name, branch = repo_name.strip('/'), path.split('/')[1]
-        repo_name = repo_name.strip('-')
-        repo_name = repo_name.strip('/')
+        repo_name = repo_name.strip('-').strip('/')
 
         return repo_name
 
