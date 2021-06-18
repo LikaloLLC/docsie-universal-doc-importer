@@ -1,5 +1,4 @@
 import os
-from urllib.parse import urlparse
 
 from swag_auth.github.connectors import GithubAPIConnector
 
@@ -10,30 +9,12 @@ from universal_doc_importer.utils import get_repo_content_path
 class GithubImporter(GithubAPIConnector):
     provider_id = 'github'
 
-    def _parse_url(self, url: str) -> str:
-        uri = urlparse(url)
-        urls = uri.path
-        if 'blob' in urls:
-            div_str = 'blob'
-        elif 'tree' in urls:
-            div_str = 'tree'
-        else:
-            urls = urls + '/blob/'
-            div_str = 'blob'
-        repo_name, path = urls.split(div_str)
-
-        repo_name, branch = repo_name.strip('/'), path.split('/')[1]
-        repo_name = repo_name.strip('-').strip('/')
-
-        return repo_name
-
     def get_repo_map(self, url, extensions):
-        repo_name = self._parse_url(url=url)
-        folder_name = '-'.join(repo_name.split('/')[:2])
-        repo = self.get_user_repo(repo_name)
+        owner, repo_name, branch, path = self._parse_url(url=url)
+        repo = self.get_user_repo(f'{owner}/{repo_name}')
 
         contents = repo.get_contents("")
-        repo_map = RepositoryMap(folder_name, extensions)
+        repo_map = RepositoryMap(repo_name, extensions)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
