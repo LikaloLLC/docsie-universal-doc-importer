@@ -7,6 +7,7 @@ class CustomConnectorRegistry(ConnectorRegistry):
         return [connector_cls for connector_cls in self.connector_map.values()]
 
     def by_id(self, connector_id):
+        self.load()
         return self.connector_map[connector_id]
 
 
