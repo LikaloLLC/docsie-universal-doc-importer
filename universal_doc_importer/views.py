@@ -20,7 +20,6 @@ class RepoMapView(APIView):
             raise Http404
 
     def get_importer(self, connector_id):
-        connector_registry.get_list()
         return connector_registry.by_id(connector_id)
 
     def get(self, request) -> 'Response':
