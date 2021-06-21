@@ -33,14 +33,18 @@ class RepoMapView(APIView):
         importer = importer_cls(swagger_storage.token.token)
         status = 200
         try:
-            extensions_str = self.request.query_params.get('extensions')
-            if extensions_str:
-                extensions = extensions_str.replace(' ', '').split(',')
-            else:
-                extensions = ['md']
+            extensions = self.get_extensions_from_query_params()
             data = importer.get_repo_map(swagger_storage.url, extensions=extensions)
         except Exception as e:
             data = {'error': str(e)}
             status = 400
 
         return Response(data=data, status=status)
+
+    def get_extensions_from_query_params(self):
+        extensions_str = self.request.query_params.get('extensions')
+        if extensions_str:
+            extensions = extensions_str.replace(' ', '').split(',')
+        else:
+            extensions = ['md']
+        return extensions
