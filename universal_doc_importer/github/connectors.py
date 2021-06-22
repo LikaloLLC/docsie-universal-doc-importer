@@ -25,13 +25,15 @@ class GithubImporter(GithubSwaggerDownloader):
                 if extension in extensions:
                     repo_map.add_path(file_content.path)
 
-        return repo_map.as_dict()
+        return {owner: repo_map.as_dict()}
 
     def get_files(self, repo_map):
-        repo_name = list(repo_map)[0]
-        repo_name = '/'.join(repo_name.split('-', 1)[:2])
+        owner, repo_name = '', ''
+        for key, value in repo_map.items():
+            owner, repo_name, repo_map = key, list(value)[0], value
+            break
         urls = get_repo_content_path(repo_map)
-        repo = self.get_user_repo(repo_name)
+        repo = self.get_user_repo(f'{owner}/{repo_name}')
         for url in urls:
             content = self.get_file_content(repo, url)
             yield url, content
