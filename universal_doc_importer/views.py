@@ -29,7 +29,7 @@ class RepoMapView(APIView):
         connector_id = swagger_storage.token.connector
         importer_cls = self.get_importer(connector_id)
 
-        importer = importer_cls(swagger_storage.token.token)
+        importer = importer_cls.from_credentials(swagger_storage.token)
         status = 200
         try:
             extensions = self.get_extensions_from_query_params()

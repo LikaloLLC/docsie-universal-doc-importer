@@ -1,12 +1,12 @@
 import os
 
-from swag_auth.github.connectors import GithubAPIConnector
+from swag_auth.github.connectors import GithubSwaggerDownloader
 
 from universal_doc_importer.repo_map import RepositoryMap
 from universal_doc_importer.utils import get_repo_content_path
 
 
-class GithubImporter(GithubAPIConnector):
+class GithubImporter(GithubSwaggerDownloader):
     provider_id = 'github'
 
     def get_repo_map(self, url, extensions):
@@ -33,7 +33,7 @@ class GithubImporter(GithubAPIConnector):
         urls = get_repo_content_path(repo_map)
         repo = self.get_user_repo(repo_name)
         for url in urls:
-            content = self.get_swagger_content(repo, url)
+            content = self.get_file_content(repo, url)
             yield url, content
 
 
