@@ -23,18 +23,18 @@ class GitlabImporter(GitlabSwaggerDownloader):
             else:
                 extension = os.path.splitext(file_content['path'])[1][1:]
                 if extension in extensions:
-                    repo_map.add_path(file_content['path'])
-        return {owner: {branch: repo_map.as_dict()}}
+                    repo_map.add_path(f"{branch}/{file_content['path']}")
+        return {owner: repo_map.as_dict()}
 
     def get_files(self, repo_map):
         owner, repo_name, branch = '', '', ''
         for key, value in repo_map.items():
-            for k, v in value.items():
-                owner, branch, repo_name, repo_map = key, k, list(v)[0], v
-
+            owner, repo_name, repo_map = key, list(value)[0], value
+            break
         urls = get_repo_content_path(repo_map)
         repo = self.get_user_repo(f'{owner}/{repo_name}')
         for url in urls:
+            branch, url = url.split('/', 1)[0], url.split('/', 1)[1]
             content = self.get_file_content(repo, url, branch)
             yield url, content
 
