@@ -13,29 +13,33 @@ class GithubImporter(GithubSwaggerDownloader):
         owner, repo_name, branch, path = self._parse_url(url=url)
         repo = self.get_user_repo(f'{owner}/{repo_name}')
 
-        contents = repo.get_contents("")
+        if not branch:
+            branch = self.get_default_branch(repo)
+
+        contents = repo.get_contents("", ref=branch)
         repo_map = RepositoryMap(repo_name, extensions)
         while contents:
             file_content = contents.pop(0)
             if file_content.type == "dir":
-                contents.extend(repo.get_contents(file_content.path))
+                contents.extend(repo.get_contents(path=file_content.path, ref=branch))
             else:
                 extension = os.path.splitext(file_content.path)[1][1:]
 
                 if extension in extensions:
-                    repo_map.add_path(file_content.path)
+                    repo_map.add_path(f'{branch}/{file_content.path}')
 
         return {owner: repo_map.as_dict()}
 
     def get_files(self, repo_map):
-        owner, repo_name = '', ''
+        owner, repo_name, branch = '', '', ''
         for key, value in repo_map.items():
             owner, repo_name, repo_map = key, list(value)[0], value
             break
         urls = get_repo_content_path(repo_map)
         repo = self.get_user_repo(f'{owner}/{repo_name}')
         for url in urls:
-            content = self.get_file_content(repo, url)
+            branch, url = url.split('/', 1)[0], url.split('/', 1)[1]
+            content = self.get_file_content(repo, url, branch)
             yield url, content
 
 
