@@ -14,6 +14,9 @@ class GitlabImporter(GitlabSwaggerDownloader):
         owner, repo_name, branch, path = self._parse_url(url=url)
 
         repo = self.get_user_repo(f'{owner}/{repo_name}')
+        if not branch:
+            branch = self.get_default_branch(repo)
+
         contents = repo.repository_tree()
         repo_map = RepositoryMap(repo_name, extensions)
         while contents:

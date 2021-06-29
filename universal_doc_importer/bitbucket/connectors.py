@@ -1,13 +1,13 @@
 import os
 
-from swag_auth.github.connectors import GithubSwaggerDownloader
+from swag_auth.bitbucket.connectors import BitbucketSwaggerDownloader
 
 from universal_doc_importer.repo_map import RepositoryMap
 from universal_doc_importer.utils import get_repo_content_path
 
 
-class GithubImporter(GithubSwaggerDownloader):
-    provider_id = 'github'
+class BitbucketImporter(BitbucketSwaggerDownloader):
+    provider_id = 'bitbucket'
 
     def get_repo_map(self, url, extensions):
         owner, repo_name, branch, path = self._parse_url(url=url)
@@ -16,17 +16,18 @@ class GithubImporter(GithubSwaggerDownloader):
         if not branch:
             branch = self.get_default_branch(repo)
 
-        contents = repo.get_contents("", ref=branch)
+        contents = self.get_file_content(repo=repo, path=path, ref=branch)
+
         repo_map = RepositoryMap(repo_name, extensions)
         while contents:
             file_content = contents.pop(0)
-            if file_content.type == "dir":
-                contents.extend(repo.get_contents(path=file_content.path, ref=branch))
+            if file_content.get('type') == "commit_directory":
+                contents.extend(self.get_file_content(repo=repo, path=file_content.get('path'), ref=branch))
             else:
-                extension = os.path.splitext(file_content.path)[1][1:]
+                extension = os.path.splitext(file_content.get('path'))[1][1:]
 
                 if extension in extensions:
-                    repo_map.add_path(f'{branch}/{file_content.path}')
+                    repo_map.add_path(f'{branch}/{file_content.get("path")}')
 
         return {owner: repo_map.as_dict()}
 
@@ -43,4 +44,4 @@ class GithubImporter(GithubSwaggerDownloader):
             yield url, content
 
 
-connector_classes = [GithubImporter]
+connector_classes = [BitbucketImporter]
