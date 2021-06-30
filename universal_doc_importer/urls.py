@@ -3,5 +3,5 @@ from django.urls import path
 from .views import RepoMapView
 
 urlpatterns = [
-    path('github/repo/', RepoMapView.as_view(), name='github_repo_map'),
+    path('repo_map/', RepoMapView.as_view(), name='repo_map'),
 ]

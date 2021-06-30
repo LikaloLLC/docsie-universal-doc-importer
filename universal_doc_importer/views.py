@@ -6,12 +6,13 @@ from rest_framework.views import APIView
 from swag_auth.models import SwaggerStorage
 
 from universal_doc_importer.registry import connector_registry
+from universal_doc_importer.serializers import RepoMapRequestSerializer
 
 
 class RepoMapView(APIView):
-    def get_storage(self, url) -> 'SwaggerStorage':
+    def get_storage(self, id) -> 'SwaggerStorage':
         try:
-            swagger = SwaggerStorage.objects.filter(user=self.request.user, url=url).last()
+            swagger = SwaggerStorage.objects.filter(user=self.request.user, pk=id).last()
             if swagger is None:
                 raise Http404
             return swagger
@@ -24,8 +25,11 @@ class RepoMapView(APIView):
 
     def get(self, request) -> 'Response':
         # Get repo map and return it to the user
-        url = self.request.query_params['url']
-        swagger_storage = self.get_storage(url)
+        serializer = RepoMapRequestSerializer(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
+        query_params = serializer.data
+
+        swagger_storage = self.get_storage(query_params['storage'])
         connector_id = swagger_storage.token.connector
         importer_cls = self.get_importer(connector_id)
 
