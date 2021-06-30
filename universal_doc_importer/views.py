@@ -10,9 +10,9 @@ from universal_doc_importer.serializers import RepoMapRequestSerializer
 
 
 class RepoMapView(APIView):
-    def get_storage(self, id) -> 'SwaggerStorage':
+    def get_storage(self, pk) -> 'SwaggerStorage':
         try:
-            swagger = SwaggerStorage.objects.filter(user=self.request.user, pk=id).last()
+            swagger = SwaggerStorage.objects.filter(user=self.request.user, pk=pk).last()
             if swagger is None:
                 raise Http404
             return swagger
