@@ -11,4 +11,4 @@ class CustomConnectorRegistry(ConnectorRegistry):
         return self.connector_map[connector_id]
 
 
-connector_registry = CustomConnectorRegistry('universal_doc_importer')
+connector_registry = CustomConnectorRegistry('docsie_universal_importer')

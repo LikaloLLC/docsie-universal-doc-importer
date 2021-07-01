@@ -3,8 +3,8 @@ import os
 from giturlparse import parse
 from swag_auth.gitlab.connectors import GitlabSwaggerDownloader
 
-from universal_doc_importer.repo_map import RepositoryMap
-from universal_doc_importer.utils import get_repo_content_path
+from docsie_universal_importer.repo_map import RepositoryMap
+from docsie_universal_importer.utils import get_repo_content_path
 
 
 class GitlabImporter(GitlabSwaggerDownloader):

@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class UniversalDocImporterConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'universal_doc_importer'
+    name = 'docsie_universal_importer'

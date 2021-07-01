@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from swag_auth.models import SwaggerStorage
 
-from universal_doc_importer.registry import connector_registry
-from universal_doc_importer.serializers import RepoMapRequestSerializer
+from docsie_universal_importer.registry import connector_registry
+from docsie_universal_importer.serializers import RepoMapRequestSerializer
 
 
 class RepoMapView(APIView):
