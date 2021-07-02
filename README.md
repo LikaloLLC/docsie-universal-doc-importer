@@ -13,6 +13,15 @@ We appretiate any help and support for this module and look forward to seeing yo
 - Bitbucket
 
 
+
+## Adapters on the roadmap
+- Swaggerhub
+- Confluence
+- Dropbox
+- Box
+- Google Drive
+- HTML
+
 # Getting started
 
 ## Install
