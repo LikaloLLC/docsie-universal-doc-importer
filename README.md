@@ -1,7 +1,7 @@
 # docsie-universal-doc-importer
 Python/Django library to import documentation from anywhere and send it to anywhere. 
 
-The primary goal of this library is to serve as a universal interface for importing docs to and from your app. The idea here is to provide django developers with a familiar 
+The primary goal of this library is to serve as a universal interface for importing docs to your app. The idea here is to provide django developers with a familiar 
 interface to build import/export modules for their app, so they no longer need to write their own code. 
 
 We appretiate any help and support for this module and look forward to seeing your comments. 
