@@ -13,14 +13,17 @@ We appretiate any help and support for this module and look forward to seeing yo
 - Bitbucket
 
 
-
 ## Adapters on the roadmap
-- Swaggerhub
 - Confluence
+- Swaggerhub
+- Google Drive
 - Dropbox
 - Box
-- Google Drive
 - HTML
+- S3
+- Google Cloud Storage
+- Azure Blob Storage
+
 
 # Getting started
 
