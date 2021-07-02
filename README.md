@@ -9,7 +9,7 @@ We appretiate any help and support for this module and look forward to seeing yo
 
 ## Current List of Adapters
 - Github
-- Gitbook
+- Gitlab
 - Bitbucket
 
 
