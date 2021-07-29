@@ -1,7 +1,12 @@
-from django.urls import path
+from importlib import import_module
 
-from .views import RepoMapView
+from docsie_universal_importer import providers
 
-urlpatterns = [
-    path('repo_map/', RepoMapView.as_view(), name='repo_map'),
-]
+urlpatterns = []
+for provider in providers.registry.get_list():
+    try:
+        prov_mod = import_module(provider.get_package() + ".urls")
+    except ImportError:
+        continue
+
+    urlpatterns.extend(getattr(prov_mod, "urlpatterns", []))
