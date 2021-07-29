@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-import github
 from github import Github, ContentFile, Repository
 
 from docsie_universal_importer.providers.base import (
@@ -35,11 +34,11 @@ class GithubStorageViewer(StorageViewer):
     def get_external_files(self):
         contents = self.repo.get_contents("")
         while contents:
-            file_content = contents.pop(0)
-            if file_content.type == "dir":
-                contents.extend(self.repo.get_contents(file_content.path))
+            file_obj = contents.pop(0)
+            if file_obj.type == "dir":
+                contents.extend(self.repo.get_contents(file_obj.path))
             else:
-                yield file_content.path, file_content.path
+                yield file_obj.path, file_obj
 
 
 class GithubDownloader(Downloader):
@@ -83,18 +82,6 @@ class GithubProvider(Provider):
 
     storage_viewer_adapter_cls = GithubStorageViewerAdapter
     downloader_adapter_cls = GithubDownloaderAdapter
-
-    def unauthorized_error(self):
-        return github.BadCredentialsException
-
-    def forbidden_error(self):
-        return github.BadCredentialsException
-
-    def not_found_error(self):
-        return github.UnknownObjectException
-
-    def bad_request_error(self):
-        return None
 
 
 provider_classes = [GithubProvider]
