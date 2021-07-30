@@ -7,7 +7,7 @@ def default_urlpatterns(connector):
     import_view = import_attribute(connector.get_package() + ".views.importer_view")
 
     urlpatterns = [
-        path("storage/", storage_view.as_view(), name=connector.provider_id + "_storage"),
-        path("import/", import_view.as_view(), name=connector.provider_id + "_import"),
+        path("storage/", storage_view, name=connector.id + "_storage"),
+        path("import/", import_view, name=connector.id + "_import"),
     ]
     return [path(connector.get_slug() + "/", include(urlpatterns))]

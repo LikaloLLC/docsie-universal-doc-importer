@@ -3,7 +3,7 @@ from typing import Type
 
 from django.utils.functional import cached_property
 
-from docsie_universal_importer.app_settings import app_settings
+from docsie_universal_importer import app_settings
 from docsie_universal_importer.import_adapter import ImportAdapter
 from docsie_universal_importer.utils import required_class_attributes_checker
 from .adapter import StorageViewerAdapter, DownloaderAdapter
@@ -12,6 +12,7 @@ from .downloader import Downloader
 
 class Provider(ABC):
     id: str = None
+    slug: str = None
 
     storage_viewer_adapter_cls: Type[StorageViewerAdapter] = None
     downloader_adapter_cls: Type[DownloaderAdapter] = None
@@ -59,3 +60,7 @@ class Provider(ABC):
     @classmethod
     def get_package(cls):
         return getattr(cls, "package", None) or cls.__module__.rpartition(".")[0]
+
+    @classmethod
+    def get_slug(cls):
+        return cls.slug or cls.id
