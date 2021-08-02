@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 from docsie_universal_importer import app_settings
 from docsie_universal_importer.import_adapter import ImportAdapter
-from docsie_universal_importer.utils import required_class_attributes_checker
+from docsie_universal_importer.utils import required_class_attributes_checker, import_attribute
 from .adapter import StorageViewerAdapter, DownloaderAdapter
 from .downloader import Downloader
 
@@ -41,7 +41,10 @@ class Provider(ABC):
         return self.downloader_adapter.get_adapted()
 
     def get_import_adapter(self) -> ImportAdapter:
-        return app_settings.PROVIDERS[self.id].get('import_adapter') or app_settings.IMPORT_ADAPTER
+        path_to_adapter = app_settings.PROVIDERS[self.id].get('import_adapter') or app_settings.IMPORT_ADAPTER
+        adapter = import_attribute(path_to_adapter)
+
+        return adapter()
 
     def get_storage_tree(self) -> dict:
         storage_viewer = self.storage_viewer
