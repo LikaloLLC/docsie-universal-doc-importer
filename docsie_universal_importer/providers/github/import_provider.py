@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -38,7 +39,7 @@ class GithubStorageViewer(StorageViewer):
             if file_obj.type == "dir":
                 contents.extend(self.repo.get_contents(file_obj.path))
             else:
-                yield file_obj.path, file_obj
+                yield os.path.dirname(file_obj.path), file_obj
 
 
 class GithubDownloader(Downloader):

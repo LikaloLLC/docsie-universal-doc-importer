@@ -60,7 +60,7 @@ class StorageViewerAdapter(Adapter):
     adapted_cls: Type[StorageViewer] = None
 
     def get_request_data(self, request):
-        return request.query_params.copy()
+        return request.GET.copy()
 
 
 class DownloaderAdapter(Adapter):
