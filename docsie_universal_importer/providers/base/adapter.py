@@ -1,3 +1,4 @@
+import json
 from abc import ABC, abstractmethod
 from typing import Type, Dict, Any, Generator
 
@@ -67,7 +68,7 @@ class DownloaderAdapter(Adapter):
     adapted_cls: Type[Downloader] = None
 
     def get_request_data(self, request):
-        return request.data.copy()
+        return json.loads(request.body)
 
     def get_files(self) -> Generator[File, None, None]:
         for file_kwargs in self.get_files_data():

@@ -30,6 +30,6 @@ class ImporterView(BaseView):
     def post(self, request):
         for file, content in self.provider.download_files():
             import_adapter = self.provider.get_import_adapter()
-            import_adapter.import_file(file, content)
+            import_adapter.import_content(file, content)
 
         return Response(status=200)
