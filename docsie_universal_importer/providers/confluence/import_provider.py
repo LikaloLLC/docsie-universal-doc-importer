@@ -85,17 +85,18 @@ class ConfluenceDownloader(Downloader):
         return self.client._get_page_html(file.id)
 
 
-class GithubDownloaderAdapter(DownloaderAdapter):
-    adapted_cls = GithubDownloader
+class ConfluenceDownloaderAdapter(DownloaderAdapter):
+    adapted_cls = ConfluenceDownloader
     request_serializer_cls = GithubDownloaderSerializer
 
     def get_adapted_init_kwargs(self, validated_data: dict):
         token = validated_data['token']
-        repo_name = validated_data['repo']
+        id = validated_data['id']
+        email = validated_data['email']
 
-        client = Github(token)
+        client = ConfluenceConnector(email=email, token=token, site="")  # TODO: make getting site!!!
 
-        return {'repo': client.get_repo(full_name_or_id=repo_name)}
+        return {'page': client._get_page_html(page_id=id)}
 
 
 class GithubStorageViewerAdapter(StorageViewerAdapter):
