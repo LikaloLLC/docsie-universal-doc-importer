@@ -75,14 +75,14 @@ class ConfluenceStorageViewer(StorageViewer):
             yield os.path.dirname(file_obj.path), file_obj
 
 
-class GithubDownloader(Downloader):
-    file_cls = GithubFile
+class ConfluenceDownloader(Downloader):
+    file_cls = ConfluenceFile
 
-    def __init__(self, repo: Repository):
-        self.repo = repo
+    def __init__(self, client: ConfluenceConnector):
+        self.client = client
 
-    def download_file(self, file: GithubFile):
-        return self.repo.get_contents(file.path).decoded_content.decode()
+    def download_file(self, file: ConfluenceFile):
+        return self.client._get_page_html(file.id)
 
 
 class GithubDownloaderAdapter(DownloaderAdapter):
