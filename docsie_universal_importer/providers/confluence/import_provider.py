@@ -49,33 +49,30 @@ class ConfluenceConnector:
 
 
 @dataclass
-class GithubFile(File):
-    path: str
+class ConfluenceFile(File):
+    id: str
 
     @classmethod
     def from_external(cls, file_obj: ContentFile, **kwargs):
         name = Path(file_obj.path).name
 
-        return cls(name=name, path=file_obj.path)
+        return cls(name=name, path='')
 
 
-class GithubStorageViewer(StorageViewer):
-    file_cls = GithubFile
+class ConfluenceStorageViewer(StorageViewer):
+    file_cls = ConfluenceFile
 
-    def __init__(self, repo: Repository):
-        self.repo = repo
+    def __init__(self, client: ConfluenceConnector):
+        self.client = client
 
     def init_storage_tree(self) -> StorageTree:
-        return StorageTree(self.repo.full_name)
+        return StorageTree("")  # nothing
 
     def get_external_files(self):
-        contents = self.repo.get_contents("")
-        while contents:
-            file_obj = contents.pop(0)
-            if file_obj.type == "dir":
-                contents.extend(self.repo.get_contents(file_obj.path))
-            else:
-                yield os.path.dirname(file_obj.path), file_obj
+        pages_ids = self.client._list_pages_ids()
+        for page_id in pages_ids:
+            file_obj = self.client._get_page_html(page_id)
+            yield os.path.dirname(file_obj.path), file_obj
 
 
 class GithubDownloader(Downloader):
