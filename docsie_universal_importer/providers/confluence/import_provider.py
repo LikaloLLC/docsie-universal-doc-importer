@@ -113,11 +113,11 @@ class ConfluenceStorageViewerAdapter(StorageViewerAdapter):
         return {'page': client._get_page_html(page_id=id)}
 
 
-class GithubProvider(Provider):
-    id = 'github'
+class ConfluenceProvider(Provider):
+    id = 'confluence'
 
-    storage_viewer_adapter_cls = GithubStorageViewerAdapter
-    downloader_adapter_cls = GithubDownloaderAdapter
+    storage_viewer_adapter_cls = ConfluenceStorageViewerAdapter
+    downloader_adapter_cls = ConfluenceDownloaderAdapter
 
 
-provider_classes = [GithubProvider]
+provider_classes = [ConfluenceProvider]
