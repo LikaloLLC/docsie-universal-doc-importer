@@ -40,7 +40,7 @@ class GoogleDriveStorageViewer(StorageViewer):
         self.google_drive = google_drive
 
     def init_storage_tree(self) -> StorageTree:
-        return StorageTree("My Drive")
+        return StorageTree(".")
 
     def get_files(self, name=None, *, is_folder=None, parent=None,
                   order_by='folder,name,createdTime'):
@@ -83,8 +83,11 @@ class GoogleDriveStorageViewer(StorageViewer):
         kwargs = {'top': 'root', 'by_name': True}
         for path, root, dirs, files in self.walk(**kwargs):
             for file in files:
-                parent = '/'.join(path[1:])
-                file_path = f"{parent}{file.get('name')}"
+                parent = '/'.join(path[1:]).lstrip('/')
+                if parent:
+                    file_path = f"{parent}/{file.get('name')}"
+                else:
+                    file_path = file.get('name')
                 file_id = file.get('id')
                 file_obj = {
                     'name': file_path,
