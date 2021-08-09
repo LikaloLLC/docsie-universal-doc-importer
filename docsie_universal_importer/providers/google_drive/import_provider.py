@@ -34,7 +34,7 @@ class GoogleDriveOauth2Client:
 
 class GoogleDriveStorageViewer(StorageViewer):
     file_cls = GoogleDriveFile
-    FOLDER = 'application/vnd.google-apps.folder'
+    folder_mimetype = 'application/vnd.google-apps.folder'
 
     def __init__(self, google_drive):
         self.google_drive = google_drive
@@ -49,7 +49,7 @@ class GoogleDriveStorageViewer(StorageViewer):
         if name is not None:
             q.append("name = '{}'".format(name.replace("'", "\\'")))
         if is_folder is not None:
-            q.append("mimeType {} '{}'".format('=' if is_folder else '!=', self.FOLDER))
+            q.append("mimeType {} '{}'".format('=' if is_folder else '!=', self.folder_mimetype))
         if parent is not None:
             q.append("'{}' in parents".format(parent.replace("'", "\\'")))
         params = {'pageToken': None, 'orderBy': order_by}
@@ -74,7 +74,7 @@ class GoogleDriveStorageViewer(StorageViewer):
             path, top = stack.pop()
             dirs, files = is_file = [], []
             for f in self.get_files(parent=top['id']):
-                is_file[f['mimeType'] != self.FOLDER].append(f)
+                is_file[f['mimeType'] != self.folder_mimetype].append(f)
             yield path, top, dirs, files
             if dirs:
                 stack.extend((path + (d['name'],), d) for d in dirs)
