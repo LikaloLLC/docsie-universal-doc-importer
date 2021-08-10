@@ -31,13 +31,16 @@ class GoogleDriveOauth2Client:
 
         self.client = build('drive', 'v3', credentials=credentials)
 
+    def __getattr__(self, item):
+        return getattr(self.client, item)
+
 
 class GoogleDriveStorageViewer(StorageViewer):
     file_cls = GoogleDriveFile
     folder_mimetype = 'application/vnd.google-apps.folder'
 
-    def __init__(self, google_drive):
-        self.google_drive = google_drive
+    def __init__(self, google_drive_client):
+        self.google_drive_client = google_drive_client
 
     def init_storage_tree(self) -> StorageTree:
         return StorageTree(".")
@@ -56,7 +59,7 @@ class GoogleDriveStorageViewer(StorageViewer):
         if q:
             params['q'] = ' and '.join(q)
         while True:
-            response = self.google_drive.client.files().list(**params).execute()
+            response = self.google_drive_client.files().list(**params).execute()
             for f in response['files']:
                 yield f
             try:
@@ -66,9 +69,9 @@ class GoogleDriveStorageViewer(StorageViewer):
 
     def walk(self, top='root', *, by_name: bool = False):
         if top:
-            top = self.google_drive.client.files().get(fileId=top).execute()
+            top = self.google_drive_client.files().get(fileId=top).execute()
         else:
-            top = self.google_drive.client.files().get(fileId="root").execute()
+            top = self.google_drive_client.files().get(fileId="root").execute()
         stack = [((top['name'],), top)]
         while stack:
             path, top = stack.pop()
@@ -99,11 +102,11 @@ class GoogleDriveStorageViewer(StorageViewer):
 class GoogleDriveDownloader(Downloader):
     file_cls = GoogleDriveFile
 
-    def __init__(self, google_drive):
-        self.google_drive = google_drive
+    def __init__(self, google_drive_client):
+        self.google_drive_client = google_drive_client
 
     def download_file(self, file: GoogleDriveFile):
-        file = self.google_drive.client.files().get_media(fileId=file.id)
+        file = self.google_drive_client.files().get_media(fileId=file.id)
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fh, file)
         done = False
@@ -121,7 +124,7 @@ class GoogleDriveDownloaderAdapter(DownloaderAdapter):
 
         client = GoogleDriveOauth2Client(token)
 
-        return {'google_drive': client}
+        return {'google_drive_client': client}
 
 
 class GoogleDriveStorageViewerAdapter(StorageViewerAdapter):
@@ -133,7 +136,7 @@ class GoogleDriveStorageViewerAdapter(StorageViewerAdapter):
 
         client = GoogleDriveOauth2Client(token)
 
-        return {'google_drive': client}
+        return {'google_drive_client': client}
 
 
 class GoogleDriveProvider(Provider):
