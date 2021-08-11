@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -28,8 +30,12 @@ class StorageTreeView(BaseView):
 
 class ImporterView(BaseView):
     def post(self, request):
+        serializer_cls = self.provider.get_import_serializer()
+        serializer = serializer_cls(data=json.loads(request.body))
+        serializer.is_valid(raise_exception=True)
+
         for file, content in self.provider.download_files():
             import_adapter = self.provider.get_import_adapter()
-            import_adapter.import_content(file, content)
+            import_adapter.import_content(file, content, **serializer.data)
 
         return Response(status=200)

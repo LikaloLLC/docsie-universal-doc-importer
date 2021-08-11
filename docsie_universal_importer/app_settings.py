@@ -17,7 +17,11 @@ class AppSettings:
 
     @property
     def IMPORT_ADAPTER(self):
-        return self._setting("ADAPTER")
+        return self._setting("ADAPTER", '')
+
+    @property
+    def IMPORT_SERIALIZER(self):
+        return self._setting('SERIALIZER', '')
 
 
 app_settings = AppSettings("UNIVERSAL_DOC_IMPORTER_")

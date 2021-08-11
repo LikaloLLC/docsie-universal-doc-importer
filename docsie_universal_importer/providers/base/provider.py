@@ -41,10 +41,16 @@ class Provider(ABC):
         return self.downloader_adapter.get_adapted()
 
     def get_import_adapter(self) -> ImportAdapter:
-        path_to_adapter = app_settings.PROVIDERS[self.id].get('import_adapter') or app_settings.IMPORT_ADAPTER
+        path_to_adapter = app_settings.PROVIDERS.get(self.id, {}).get('import_adapter') or app_settings.IMPORT_ADAPTER
         adapter = import_attribute(path_to_adapter)
 
         return adapter()
+
+    def get_import_serializer(self):
+        path_to_serializer = app_settings.PROVIDERS.get(self.id, {}).get('import_serializer') \
+                             or app_settings.IMPORT_SERIALIZER
+
+        return import_attribute(path_to_serializer)
 
     def get_storage_tree(self) -> dict:
         storage_viewer = self.storage_viewer
