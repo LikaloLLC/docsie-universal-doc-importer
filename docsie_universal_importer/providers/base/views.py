@@ -36,6 +36,6 @@ class ImporterView(BaseView):
 
         for file, content in self.provider.download_files():
             import_adapter = self.provider.get_import_adapter()
-            import_adapter.import_content(file, content, **serializer.data)
+            import_adapter.import_content(request, file, content, **serializer.data)
 
         return Response(status=200)
