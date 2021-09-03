@@ -49,7 +49,10 @@ class GithubDownloader(Downloader):
         self.repo = repo
 
     def download_file(self, file: GithubFile):
-        return self.repo.get_contents(file.path).decoded_content.decode()
+        try:
+            return self.repo.get_contents(file.path).decoded_content.decode()
+        except UnicodeDecodeError:
+            return self.repo.get_contents(file.path).decoded_content
 
 
 class GithubDownloaderAdapter(DownloaderAdapter):
