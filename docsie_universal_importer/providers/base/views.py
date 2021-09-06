@@ -33,9 +33,10 @@ class ImporterView(BaseView):
         serializer_cls = self.provider.get_import_serializer()
         serializer = serializer_cls(data=json.loads(request.body))
         serializer.is_valid(raise_exception=True)
-
+        response = {'data': []}
         for file, content in self.provider.download_files():
             import_adapter = self.provider.get_import_adapter()
-            import_adapter.import_content(request, file, content, **serializer.data)
+            retval = import_adapter.import_content(request, file, content, **serializer.data)
+            response['data'].append(retval)
 
-        return Response(status=200)
+        return Response(data=response, status=200)
