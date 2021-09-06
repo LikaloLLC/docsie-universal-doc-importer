@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="docsie_universal_importer",
-    version="0.0.1",
+    version="0.0.2",
     author="Likalo Limited",
     author_email="hello@docsie.io",
     description="This is an open source implementation of docsie_universal_importer",
@@ -26,7 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.5, <4",
     install_requires=[
-        'django==2.2.2',
+        'django>=2.2.2, <4',
         'swag_auth @ git+https://github.com/LikaloLLC/django-swag-auth.git'
     ],
     include_package_data=True,
