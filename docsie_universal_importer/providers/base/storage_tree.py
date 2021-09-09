@@ -25,9 +25,9 @@ class StorageTree:
     name: str
 
     type: str = field(init=False, default='directory')
-    children: list[Union['StorageTree', File]] = field(default_factory=list)
+    children: List[Union['StorageTree', File]] = field(default_factory=list)
 
-    def add_file(self, path, file: File):
+    def add_file(self, path, file: File) -> None:
         current_path = self.children
         for bit in Path(path).parts:
             # Get the first dict which contains a `bit` key.
@@ -47,7 +47,7 @@ class StorageTree:
         if file not in current_path:
             current_path.append(file)
 
-    def get_files(self):
+    def get_files(self) -> List[File]:
         files: List[File] = []
 
         for child in self.children:
@@ -58,7 +58,7 @@ class StorageTree:
 
         return files
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         storage_tree = {
             self.name: {
                 'type': self.type,
