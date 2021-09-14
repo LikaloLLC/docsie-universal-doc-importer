@@ -11,17 +11,16 @@ We appretiate any help and support for this module and look forward to seeing yo
 - Github
 - Gitlab
 - Bitbucket
-
+- Google Drive
+- Dropbox
+- Box
+- Google Cloud Storage
 
 ## Adapters on the roadmap
 - Confluence
 - Swaggerhub
-- Google Drive
-- Dropbox
-- Box
 - HTML
 - S3
-- Google Cloud Storage
 - Azure Blob Storage
 
 
@@ -51,71 +50,46 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
 
-    # social accounts
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.gitlab',
-    'allauth.socialaccount.providers.bitbucket_oauth2',
-
-    # encrypted model fields
-    'encrypted_model_fields',
-
-    # swag_auth
-    'swag_auth',
-
     # universal importer
-    'docsie_universal_importer.apps.DocsieUniversalImporterConfig'
+    'docsie_universal_importer',
     
+    # Providers
+    'docsie_universal_importer.providers.github',
+    'docsie_universal_importer.providers.gitlab',
+    'docsie_universal_importer.providers.bitbucket',
+    'docsie_universal_importer.providers.confluence',
+    'docsie_universal_importer.providers.box',
+    'docsie_universal_importer.providers.google_drive',
+    'docsie_universal_importer.providers.google_cloud_storage',
     ...
 ]
 
-
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-SWAGAUTH_SETTINGS = {
-    'bitbucket': {
-        'APP': {
-            'key': 'bitbucket key',
-            'secret': 'bitbucket secret',
-        },
-        'SCOPE': [
-            'repository',
-        ],
-    },
+UNIVERSAL_DOC_IMPORTER_IMPORT_ADAPTER = 'path.to.Adapter'  # Adapter that receives downloaded content.
+UNIVERSAL_DOC_IMPORTER_SERIALIZER = path.to.ImportParamsSerializer'  # Serializer with additional fields,
+                                                                     # that are passed into import endpoint.
+UNIVERSAL_DOC_IMPORTER_PROVIDERS = {
     'github': {
+        'import_adapter': 'app.adapters.GithubImportAdapter',  # Overrides UNIVERSAL_DOC_IMPORTER_IMPORT_ADAPTER setting.
+        
+        # OAuth application credentials
         'APP': {
-            'client_id': 'github client id',
-            'secret': 'github secret',
+            'client_id': env.str('GITHUB_CLIENT_ID'),
+            'secret': env.str('GITHUB_SECRET'),
+            'key': '',
         },
+        
+        # OAuth scope
         'SCOPE': [
             'repo',
         ],
     },
-    'gitlab': {
-        'APP': {
-            'client_id': 'gitlab client id',
-            'secret': 'gitlab secret',
-        },
-        'SCOPE': [
-            'read_repository',
-            'api',
-        ]
-    }
+    ...
 }
 
-FIELD_ENCRYPTION_KEY = 'field-encryption-key'
 ```
 
 ### 2. project_name/urls.py
-```angular2html
+```
     path('importer/', include('docsie_universal_importer.urls')),
-    path('swag/', include('swag_auth.urls')),
     path('account/', include('rest_auth.urls'))
 ```
