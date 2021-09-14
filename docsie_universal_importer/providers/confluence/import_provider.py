@@ -6,10 +6,11 @@ from github import ContentFile
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .serializers import ConfluenceStorageTreeRequestSerializer, ConfluenceDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 class ConfluenceConnector:
@@ -108,11 +109,11 @@ class ConfluenceStorageViewerAdapter(StorageViewerAdapter):
         return {'client': client}
 
 
-class ConfluenceProvider(Provider):
+class ConfluenceOAuth2Provider(OAuth2Provider):
     id = 'confluence'
 
     storage_viewer_adapter_cls = ConfluenceStorageViewerAdapter
     downloader_adapter_cls = ConfluenceDownloaderAdapter
 
 
-provider_classes = [ConfluenceProvider]
+provider_classes = [ConfluenceOAuth2Provider]

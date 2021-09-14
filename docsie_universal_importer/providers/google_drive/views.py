@@ -11,6 +11,6 @@ class GoogleDriveOAuth2Adapter(OAuth2Adapter):
 
 
 login_view = OAuth2LoginView.adapter_view(GoogleDriveOAuth2Adapter)
-callbackview = OAuth2CallbackView.adapter_view(GoogleDriveOAuth2Adapter)
+callback_view = OAuth2CallbackView.adapter_view(GoogleDriveOAuth2Adapter)
 storage_view = StorageTreeView.provider_view(GoogleDriveOAuth2Provider)
 importer_view = ImporterView.provider_view(GoogleDriveOAuth2Provider)
