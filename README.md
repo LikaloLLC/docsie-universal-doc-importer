@@ -32,6 +32,12 @@ We appretiate any help and support for this module and look forward to seeing yo
 $ pip3 install git+https://github.com/LikaloLLC/docsie-universal-doc-importer
 ```
 
+## Migrate
+```bash
+python manage.py migrate
+```
+
+
 ## Configurations
 ### 1. project_name/settings.py
 ```
