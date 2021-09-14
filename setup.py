@@ -26,8 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.5, <4",
     install_requires=[
-        'django>=2.2.2, <4',
-        'swag_auth @ git+https://github.com/LikaloLLC/django-swag-auth.git'
+        'django>=2.2.2, <4'
     ],
     include_package_data=True,
     setup_requires=["wheel"]
