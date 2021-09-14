@@ -11,6 +11,7 @@ from docsie_universal_importer.providers.base import (
     StorageViewerAdapter
 )
 from .serializers import GoogleCloudStorageTreeRequestSerializer, GoogleCloudStorageDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -84,11 +85,11 @@ class GoogleCloudStorageViewerAdapter(StorageViewerAdapter):
         return {'bucket': client.get_bucket(bucket)}
 
 
-class GoogleCloudStorageProvider(Provider):
+class GoogleCloudStorageOAuth2Provider(OAuth2Provider):
     id = 'google_cloud_storage'
 
     storage_viewer_adapter_cls = GoogleCloudStorageViewerAdapter
     downloader_adapter_cls = GoogleCloudStorageDownloaderAdapter
 
 
-provider_classes = [GoogleCloudStorageProvider]
+provider_classes = [GoogleCloudStorageOAuth2Provider]

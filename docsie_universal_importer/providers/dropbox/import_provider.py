@@ -5,10 +5,11 @@ from dropbox import Dropbox, files
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .serializers import DropboxStorageTreeRequestSerializer, DropboxDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -76,11 +77,11 @@ class DropboxStorageViewerAdapter(StorageViewerAdapter):
         return {'dropbox_client': client}
 
 
-class DropboxProvider(Provider):
+class DropboxOAuth2Provider(OAuth2Provider):
     id = 'dropbox'
 
     storage_viewer_adapter_cls = DropboxStorageViewerAdapter
     downloader_adapter_cls = DropboxDownloaderAdapter
 
 
-provider_classes = [DropboxProvider]
+provider_classes = [DropboxOAuth2Provider]

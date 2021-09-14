@@ -10,6 +10,7 @@ from docsie_universal_importer.providers.base import (
     StorageViewerAdapter
 )
 from .serializers import GithubStorageTreeRequestSerializer, GithubDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -75,17 +76,18 @@ class GithubStorageViewerAdapter(StorageViewerAdapter):
     def get_adapted_init_kwargs(self, validated_data: dict):
         token = validated_data['token']
         repo_name = validated_data['repo']
+        print(token, repo_name)
 
         client = Github(token)
 
         return {'repo': client.get_repo(full_name_or_id=repo_name)}
 
 
-class GithubProvider(Provider):
+class GithubOAuth2Provider(OAuth2Provider):
     id = 'github'
 
     storage_viewer_adapter_cls = GithubStorageViewerAdapter
     downloader_adapter_cls = GithubDownloaderAdapter
 
 
-provider_classes = [GithubProvider]
+provider_classes = [GithubOAuth2Provider]

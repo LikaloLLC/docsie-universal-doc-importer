@@ -13,6 +13,7 @@ from docsie_universal_importer.providers.base import (
     StorageViewerAdapter
 )
 from .serializers import GoogleDriveStorageTreeRequestSerializer, GoogleDriveDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -139,11 +140,11 @@ class GoogleDriveStorageViewerAdapter(StorageViewerAdapter):
         return {'google_drive_client': client}
 
 
-class GoogleDriveProvider(Provider):
+class GoogleDriveOAuth2Provider(OAuth2Provider):
     id = 'google'
 
     storage_viewer_adapter_cls = GoogleDriveStorageViewerAdapter
     downloader_adapter_cls = GoogleDriveDownloaderAdapter
 
 
-provider_classes = [GoogleDriveProvider]
+provider_classes = [GoogleDriveOAuth2Provider]

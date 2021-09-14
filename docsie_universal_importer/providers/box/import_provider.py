@@ -7,10 +7,11 @@ from django.conf import settings
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .serializers import BoxStorageTreeRequestSerializer, BoxDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -92,11 +93,11 @@ class BoxStorageViewerAdapter(StorageViewerAdapter):
         return {'box_client': client}
 
 
-class BoxProvider(Provider):
+class BoxOAuth2Provider(OAuth2Provider):
     id = 'box'
 
     storage_viewer_adapter_cls = BoxStorageViewerAdapter
     downloader_adapter_cls = BoxDownloaderAdapter
 
 
-provider_classes = [BoxProvider]
+provider_classes = [BoxOAuth2Provider]

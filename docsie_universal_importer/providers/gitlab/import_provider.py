@@ -10,6 +10,7 @@ from docsie_universal_importer.providers.base import (
     StorageViewerAdapter
 )
 from .serializers import GitlabDownloaderSerializer, GitlabStorageTreeRequestSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -91,11 +92,11 @@ class GitlabStorageViewerAdapter(StorageViewerAdapter):
         return {'repo': client.projects.get(repo_name)}
 
 
-class GitlabProvider(Provider):
+class GitlabOAuth2Provider(OAuth2Provider):
     id = 'gitlab'
 
     storage_viewer_adapter_cls = GitlabStorageViewerAdapter
     downloader_adapter_cls = GitlabDownloaderAdapter
 
 
-provider_classes = [GitlabProvider]
+provider_classes = [GitlabOAuth2Provider]

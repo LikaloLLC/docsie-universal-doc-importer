@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Type
 
 from django.utils.functional import cached_property
@@ -24,6 +24,10 @@ class Provider(ABC):
 
         self.request = request
 
+    @abstractmethod
+    def get_login_url(self):
+        pass
+
     @cached_property
     def storage_viewer_adapter(self):
         return self.storage_viewer_adapter_cls(self.request)
@@ -41,14 +45,15 @@ class Provider(ABC):
         return self.downloader_adapter.get_adapted()
 
     def get_import_adapter(self) -> ImportAdapter:
-        path_to_adapter = app_settings.PROVIDERS.get(self.id, {}).get('import_adapter') or app_settings.IMPORT_ADAPTER
+        settings = self.get_settings()
+        path_to_adapter = settings.get('import_adapter') or app_settings.IMPORT_ADAPTER
         adapter = import_attribute(path_to_adapter)
 
         return adapter()
 
     def get_import_serializer(self):
-        path_to_serializer = app_settings.PROVIDERS.get(self.id, {}).get('import_serializer') \
-                             or app_settings.IMPORT_SERIALIZER
+        settings = self.get_settings()
+        path_to_serializer = settings.get('import_serializer') or app_settings.IMPORT_SERIALIZER
 
         return import_attribute(path_to_serializer)
 
@@ -65,6 +70,10 @@ class Provider(ABC):
             file = self.downloader.get_file_from_kwargs(**file_kwargs)
 
             yield file, downloader.download_file(file)
+
+    @classmethod
+    def get_settings(cls) -> dict:
+        return app_settings.PROVIDERS.get(cls.id, {})
 
     @classmethod
     def get_package(cls):

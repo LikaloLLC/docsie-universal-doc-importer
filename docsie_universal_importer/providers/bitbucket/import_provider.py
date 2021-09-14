@@ -6,10 +6,11 @@ from swag_auth.bitbucket.connectors import BitbucketAPIConnector
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .serializers import BitbucketStorageTreeRequestSerializer, BitbucketDownloaderSerializer
+from ..oauth2.provider import OAuth2Provider
 
 
 @dataclass
@@ -95,11 +96,11 @@ class BitbucketStorageViewerAdapter(StorageViewerAdapter):
         return {'repo': BitbucketRepository(client, repo_name)}
 
 
-class BitbucketProvider(Provider):
+class BitbucketOAuth2Provider(OAuth2Provider):
     id = 'bitbucket'
 
     storage_viewer_adapter_cls = BitbucketStorageViewerAdapter
     downloader_adapter_cls = BitbucketDownloaderAdapter
 
 
-provider_classes = [BitbucketProvider]
+provider_classes = [BitbucketOAuth2Provider]
