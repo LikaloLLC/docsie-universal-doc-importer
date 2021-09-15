@@ -4,6 +4,7 @@ from pathlib import Path
 
 from boxsdk import OAuth2, Client
 
+from docsie_universal_importer.app_settings import app_settings
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
@@ -11,7 +12,6 @@ from docsie_universal_importer.providers.base import (
 )
 from .serializers import BoxStorageTreeRequestSerializer, BoxDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
-from ...app_settings import app_settings
 
 
 @dataclass
