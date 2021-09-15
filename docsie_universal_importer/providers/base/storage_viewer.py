@@ -1,6 +1,8 @@
+import os.path
 from abc import ABC, abstractmethod
 from typing import Any, Type, Tuple, Generator
 
+from docsie_universal_importer import app_settings
 from docsie_universal_importer.utils import required_class_attributes_checker
 from .storage_tree import File, StorageTree
 
@@ -18,11 +20,14 @@ class StorageViewer(ABC):
 
     def get_storage_tree(self) -> StorageTree:
         storage_tree = self.init_storage_tree()
+        allowed_extensions = app_settings.ALLOWED_EXTENSIONS
 
         for path, file_obj in self.get_external_files():
             file = self.get_file_from_external(file_obj)
+            extension = os.path.splitext(file.name)[1][1:]
 
-            storage_tree.add_file(path, file)
+            if allowed_extensions == '*' or extension in allowed_extensions:
+                storage_tree.add_file(path, file)
 
         return storage_tree
 

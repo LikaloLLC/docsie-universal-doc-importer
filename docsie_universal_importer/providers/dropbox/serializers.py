@@ -1,4 +1,5 @@
 from docsie_universal_importer.providers.base import StorageTreeRequestSerializer, DownloaderRequestSerializer
+from .file import DropboxFile
 
 
 class DropboxStorageTreeRequestSerializer(StorageTreeRequestSerializer):
@@ -6,4 +7,5 @@ class DropboxStorageTreeRequestSerializer(StorageTreeRequestSerializer):
 
 
 class DropboxDownloaderSerializer(DownloaderRequestSerializer):
-    pass
+    class Meta:
+        file_cls = DropboxFile

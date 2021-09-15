@@ -1,14 +1,13 @@
 import os
-from dataclasses import dataclass
 
 import requests
-from github import ContentFile
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .file import ConfluenceFile
 from .serializers import ConfluenceStorageTreeRequestSerializer, ConfluenceDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
 
@@ -45,17 +44,6 @@ class ConfluenceConnector:
     def list_pages_ids(self, page_id='/'):
         response = self._request(page_id).json()  # request to the base url
         return response.get('results')
-
-
-@dataclass
-class ConfluenceFile(File):
-    id: str
-
-    @classmethod
-    def from_external(cls, file_obj: ContentFile, **kwargs):
-        name = file_obj.get('title')
-
-        return cls(name=name, id=file_obj.get('id'))
 
 
 class ConfluenceStorageViewer(StorageViewer):

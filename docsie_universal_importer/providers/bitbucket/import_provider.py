@@ -1,27 +1,15 @@
 import os
-from dataclasses import dataclass
-from pathlib import Path
 
 from docsie_universal_importer.app_settings import app_settings
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
+    StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .api_client import BitbucketAPIConnector
+from .file import BitbucketFile
 from .serializers import BitbucketStorageTreeRequestSerializer, BitbucketDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
-
-
-@dataclass
-class BitbucketFile(File):
-    path: str
-
-    @classmethod
-    def from_external(cls, file_obj, **kwargs):
-        name = Path(file_obj['path']).name
-
-        return cls(name=name, path=file_obj['path'])
 
 
 class BitbucketRepository:

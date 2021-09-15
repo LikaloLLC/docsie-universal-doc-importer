@@ -1,27 +1,15 @@
 import os
-from dataclasses import dataclass
-from pathlib import Path
 
 from gitlab import Gitlab
 
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
+    StorageViewer, StorageTree,
     Downloader, Provider, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .file import GitlabFile
 from .serializers import GitlabDownloaderSerializer, GitlabStorageTreeRequestSerializer
 from ..oauth2.provider import OAuth2Provider
-
-
-@dataclass
-class GitlabFile(File):
-    path: str
-
-    @classmethod
-    def from_external(cls, file_obj, **kwargs):
-        name = Path(file_obj['path']).name
-
-        return cls(name=name, path=file_obj['path'])
 
 
 class GitlabStorageViewer(StorageViewer):

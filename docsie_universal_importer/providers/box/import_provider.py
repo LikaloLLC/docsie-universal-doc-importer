@@ -1,28 +1,16 @@
 import os
-from dataclasses import dataclass
-from pathlib import Path
 
 from boxsdk import OAuth2, Client
 
 from docsie_universal_importer.app_settings import app_settings
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
-    Downloader, DownloaderAdapter,
+    StorageViewer, StorageTree,
+    Downloader, Provider, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .file import BoxFile
 from .serializers import BoxStorageTreeRequestSerializer, BoxDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
-
-
-@dataclass
-class BoxFile(File):
-    id: str
-
-    @classmethod
-    def from_external(cls, file_obj, **kwargs):
-        name = Path(file_obj.name).name
-
-        return cls(name=name, id=file_obj.id)
 
 
 class BoxStorageViewer(StorageViewer):

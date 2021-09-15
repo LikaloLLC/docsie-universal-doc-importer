@@ -1,25 +1,15 @@
 import os
-from dataclasses import dataclass
 
 from dropbox import Dropbox, files
 
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
+    StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .file import DropboxFile
 from .serializers import DropboxStorageTreeRequestSerializer, DropboxDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
-
-
-@dataclass
-class DropboxFile(File):
-    path: str
-
-    @classmethod
-    def from_external(cls, file_obj, **kwargs):
-
-        return cls(name=file_obj.name, path=file_obj.path_lower)
 
 
 class DropboxStorageViewer(StorageViewer):
