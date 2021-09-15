@@ -12,7 +12,7 @@ class OAuth2Provider(Provider):
             url = url + '?' + urlencode(kwargs)
         return url
 
-    def get_auth_params(self, request, action):
+    def get_auth_params(self, request):
         settings = self.get_settings()
         ret = dict(settings.get('AUTH_PARAMS', {}))
         dynamic_auth_params = request.GET.get('auth_params', None)
