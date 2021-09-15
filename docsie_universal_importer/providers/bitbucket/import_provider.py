@@ -2,13 +2,13 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from swag_auth.bitbucket.connectors import BitbucketAPIConnector
-
+from docsie_universal_importer.app_settings import app_settings
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .api_client import BitbucketAPIConnector
 from .serializers import BitbucketStorageTreeRequestSerializer, BitbucketDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
 
@@ -30,7 +30,7 @@ class BitbucketRepository:
         self.client = client
 
     def get_content(self, path: str, ref: str):
-        return self.client.client.get_file_content(self.name, path, ref)
+        return self.client.get_file_content(self.name, path, ref)
 
     def get_default_branch(self) -> str:
         return self.client.get_default_branch(self.name)
@@ -78,7 +78,8 @@ class BitbucketDownloaderAdapter(DownloaderAdapter):
         token = validated_data['token']
         repo_name = validated_data['repo']
 
-        client = BitbucketAPIConnector(token)
+        client_id = app_settings.PROVIDERS['APP']['client_id']
+        client = BitbucketAPIConnector(client_id, token)
 
         return {'repo': BitbucketRepository(client, repo_name)}
 
@@ -91,7 +92,8 @@ class BitbucketStorageViewerAdapter(StorageViewerAdapter):
         token = validated_data['token']
         repo_name = validated_data['repo']
 
-        client = BitbucketAPIConnector(token)
+        client_id = app_settings.PROVIDERS['APP']['client_id']
+        client = BitbucketAPIConnector(client_id, token)
 
         return {'repo': BitbucketRepository(client, repo_name)}
 

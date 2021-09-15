@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from swag_auth.models import ConnectorToken
+from docsie_universal_importer.models import ConnectorToken
 
 
 class BaseRequestSerializer(serializers.Serializer):
