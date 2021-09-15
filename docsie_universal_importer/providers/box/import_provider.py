@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from boxsdk import OAuth2, Client
-from django.conf import settings
 
 from docsie_universal_importer.providers.base import (
     File, StorageViewer, StorageTree,
@@ -12,6 +11,7 @@ from docsie_universal_importer.providers.base import (
 )
 from .serializers import BoxStorageTreeRequestSerializer, BoxDownloaderSerializer
 from ..oauth2.provider import OAuth2Provider
+from ...app_settings import app_settings
 
 
 @dataclass
@@ -60,10 +60,11 @@ class BoxDownloader(Downloader):
 
 
 class BoxOauth2Client(Client):
-    def __init__(self, token, *args, **kwargs):
+    def __init__(self, client_id: str, client_secret: str, token: str, *args, **kwargs):
+
         auth = OAuth2(
-            client_id=settings.SWAGAUTH_SETTINGS['box']['APP']['client_id'],
-            client_secret=settings.SWAGAUTH_SETTINGS['box']['APP']['secret'],
+            client_id=client_id,
+            client_secret=client_secret,
             access_token=token,
         )
         super().__init__(oauth=auth)
@@ -76,7 +77,9 @@ class BoxDownloaderAdapter(DownloaderAdapter):
     def get_adapted_init_kwargs(self, validated_data: dict):
         token = validated_data['token']
 
-        client = BoxOauth2Client(token)
+        client_id = app_settings.PROVIDERS['box']['APP']['client_id']
+        client_secret = app_settings.PROVIDERS['box']['APP']['client_id']
+        client = BoxOauth2Client(client_id, client_secret, token)
 
         return {'box_client': client}
 
@@ -88,7 +91,9 @@ class BoxStorageViewerAdapter(StorageViewerAdapter):
     def get_adapted_init_kwargs(self, validated_data: dict):
         token = validated_data['token']
 
-        client = BoxOauth2Client(token)
+        client_id = app_settings.PROVIDERS['box']['APP']['client_id']
+        client_secret = app_settings.PROVIDERS['box']['APP']['client_id']
+        client = BoxOauth2Client(client_id, client_secret, token)
 
         return {'box_client': client}
 
