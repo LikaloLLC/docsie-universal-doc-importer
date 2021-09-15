@@ -1,26 +1,15 @@
 import os
-from dataclasses import dataclass
-from pathlib import Path
 
 from google.cloud.storage import Client
 from google.oauth2.credentials import Credentials
 
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
+    StorageViewer, StorageTree,
     Downloader, Provider, DownloaderAdapter,
     StorageViewerAdapter
 )
+from .file import GoogleCloudStorageFile
 from .serializers import GoogleCloudStorageTreeRequestSerializer, GoogleCloudStorageDownloaderSerializer
-
-
-@dataclass
-class GoogleCloudStorageFile(File):
-    path: str
-
-    @classmethod
-    def from_external(cls, file_obj, **kwargs):
-        name = Path(file_obj.name).name
-        return cls(name=name, path=file_obj.name)
 
 
 class GoogleCloudStorage(Client):

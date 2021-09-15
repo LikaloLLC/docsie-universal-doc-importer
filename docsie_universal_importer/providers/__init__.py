@@ -36,7 +36,9 @@ class ProviderRegistry(object):
             for app in settings.INSTALLED_APPS:
                 try:
                     provider_module = importlib.import_module(app + ".import_provider")
-                except ImportError:
+                except ImportError as e:
+                    if 'cannot import name ' in str(e):
+                        raise e
                     pass
                 else:
                     for cls in getattr(provider_module, "provider_classes", []):

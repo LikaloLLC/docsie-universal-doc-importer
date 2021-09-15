@@ -23,6 +23,10 @@ class AppSettings:
     def IMPORT_SERIALIZER(self):
         return self._setting('SERIALIZER', '')
 
+    @property
+    def ALLOWED_EXTENSIONS(self):
+        return self._setting('ALLOWED_EXTENSIONS', '*')
+
 
 app_settings = AppSettings("UNIVERSAL_DOC_IMPORTER_")
 app_settings.__name__ = __name__

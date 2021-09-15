@@ -1,4 +1,5 @@
 from docsie_universal_importer.providers.base import StorageTreeRequestSerializer, DownloaderRequestSerializer
+from .file import ConfluenceFile
 
 
 class ConfluenceStorageTreeRequestSerializer(StorageTreeRequestSerializer):
@@ -6,4 +7,5 @@ class ConfluenceStorageTreeRequestSerializer(StorageTreeRequestSerializer):
 
 
 class ConfluenceDownloaderSerializer(DownloaderRequestSerializer):
-    pass
+    class Meta:
+        file_cls = ConfluenceFile
