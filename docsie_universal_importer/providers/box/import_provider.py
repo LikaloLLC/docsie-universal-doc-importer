@@ -2,10 +2,10 @@ import os
 
 from boxsdk import OAuth2, Client
 
-from docsie_universal_importer.app_settings import app_settings
+from docsie_universal_importer import app_settings
 from docsie_universal_importer.providers.base import (
     StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .file import BoxFile
@@ -49,7 +49,6 @@ class BoxDownloader(Downloader):
 
 class BoxOauth2Client(Client):
     def __init__(self, client_id: str, client_secret: str, token: str, *args, **kwargs):
-
         auth = OAuth2(
             client_id=client_id,
             client_secret=client_secret,

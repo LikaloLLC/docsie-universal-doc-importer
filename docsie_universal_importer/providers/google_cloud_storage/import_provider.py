@@ -5,7 +5,7 @@ from google.oauth2.credentials import Credentials
 
 from docsie_universal_importer.providers.base import (
     StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .file import GoogleCloudStorageFile

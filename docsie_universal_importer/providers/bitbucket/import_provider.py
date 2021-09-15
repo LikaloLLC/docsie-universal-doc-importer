@@ -1,6 +1,6 @@
 import os
 
-from docsie_universal_importer.app_settings import app_settings
+from docsie_universal_importer import app_settings
 from docsie_universal_importer.providers.base import (
     StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,

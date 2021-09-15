@@ -4,7 +4,7 @@ from gitlab import Gitlab
 
 from docsie_universal_importer.providers.base import (
     StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .file import GitlabFile

@@ -3,7 +3,7 @@ import os
 import requests
 
 from docsie_universal_importer.providers.base import (
-    File, StorageViewer, StorageTree,
+    StorageViewer, StorageTree,
     Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )

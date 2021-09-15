@@ -4,7 +4,7 @@ from github import Github, Repository
 
 from docsie_universal_importer.providers.base import (
     StorageViewer, StorageTree,
-    Downloader, Provider, DownloaderAdapter,
+    Downloader, DownloaderAdapter,
     StorageViewerAdapter
 )
 from .file import GithubFile
