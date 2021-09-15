@@ -19,7 +19,7 @@ from .provider import OAuth2Provider
 
 class OAuth2Adapter:
     provider_id: str = None
-    
+    audience = None
     expires_in_key = "expires_in"
     client_class = OAuth2Client
     supports_state = True
@@ -103,7 +103,13 @@ class OAuth2LoginView(OAuth2View):
         auth_url = self.adapter.authorize_url
         client.state = SocialLogin.stash_state(request)
         try:
-            return HttpResponseRedirect(client.get_redirect_url(auth_url, {}))
+            redirect_url = client.get_redirect_url(auth_url, {})
+
+            if self.adapter.audience:
+                # for confluence we need toa add audience
+                redirect_url += '&audience={}'.format(self.adapter.audience)
+
+            return HttpResponseRedirect(redirect_url)
         except OAuth2Error as e:
             return render_authentication_error(request, self.adapter.provider_id, exception=e)
 

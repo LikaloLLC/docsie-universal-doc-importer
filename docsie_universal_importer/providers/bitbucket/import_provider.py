@@ -18,7 +18,7 @@ class BitbucketRepository:
         self.client = client
 
     def get_content(self, path: str, ref: str):
-        return self.client.get_file_content(self.name, path, ref)
+        return self.client.get_content(self.name, path, ref)
 
     def get_default_branch(self) -> str:
         return self.client.get_default_branch(self.name)
@@ -34,7 +34,7 @@ class BitbucketStorageViewer(StorageViewer):
         return StorageTree(self.repo.name)
 
     def get_contents(self, repo, path, branch):
-        return repo.client.get_file_content(self.repo.name, path, branch)
+        return repo.get_content(path, branch)
 
     def get_external_files(self):
         branch = self.repo.get_default_branch()
@@ -55,7 +55,7 @@ class BitbucketDownloader(Downloader):
         self.repo = repo
 
     def download_file(self, file: BitbucketFile):
-        return self.repo.get_content(file.path, self.repo.get_default_branch())
+        return self.repo.client.client.get_file_content(self.repo.name, file.path, self.repo.get_default_branch())
 
 
 class BitbucketDownloaderAdapter(DownloaderAdapter):
@@ -66,7 +66,7 @@ class BitbucketDownloaderAdapter(DownloaderAdapter):
         token = validated_data['token']
         repo_name = validated_data['repo']
 
-        client_id = app_settings.PROVIDERS['APP']['client_id']
+        client_id = app_settings.PROVIDERS['bitbucket']['APP']['client_id']
         client = BitbucketAPIConnector(client_id, token)
 
         return {'repo': BitbucketRepository(client, repo_name)}
@@ -79,8 +79,7 @@ class BitbucketStorageViewerAdapter(StorageViewerAdapter):
     def get_adapted_init_kwargs(self, validated_data: dict):
         token = validated_data['token']
         repo_name = validated_data['repo']
-
-        client_id = app_settings.PROVIDERS['APP']['client_id']
+        client_id = app_settings.PROVIDERS['bitbucket']['APP']['client_id']
         client = BitbucketAPIConnector(client_id, token)
 
         return {'repo': BitbucketRepository(client, repo_name)}

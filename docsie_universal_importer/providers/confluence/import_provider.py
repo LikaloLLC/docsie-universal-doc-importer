@@ -99,7 +99,7 @@ class ConfluenceStorageViewerAdapter(StorageViewerAdapter):
 
 class ConfluenceOAuth2Provider(OAuth2Provider):
     id = 'confluence'
-
+    audience = 'api.atlassian.com'
     storage_viewer_adapter_cls = ConfluenceStorageViewerAdapter
     downloader_adapter_cls = ConfluenceDownloaderAdapter
 
