@@ -66,6 +66,9 @@ class BitbucketAPIConnector:
         """
         return self.client.get_content(repo, path, ref)
 
+    def get_file_content(self, repo, path, ref):
+        return self.client.get_file_content(repo, path, ref)
+
     def get_user_repo(self, repo_name):
         """
         Return user`s repository

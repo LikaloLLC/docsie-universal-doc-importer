@@ -20,6 +20,9 @@ class BitbucketRepository:
     def get_content(self, path: str, ref: str):
         return self.client.get_content(self.name, path, ref)
 
+    def get_file_content(self, path: str, ref: str):
+        return self.client.get_file_content(self.name, path, ref)
+
     def get_default_branch(self) -> str:
         return self.client.get_default_branch(self.name)
 
@@ -55,7 +58,7 @@ class BitbucketDownloader(Downloader):
         self.repo = repo
 
     def download_file(self, file: BitbucketFile):
-        return self.repo.client.client.get_file_content(self.repo.name, file.path, self.repo.get_default_branch())
+        return self.repo.get_file_content(file.path, self.repo.get_default_branch())
 
 
 class BitbucketDownloaderAdapter(DownloaderAdapter):
