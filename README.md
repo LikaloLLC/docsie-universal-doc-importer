@@ -32,14 +32,8 @@ We appretiate any help and support for this module and look forward to seeing yo
 $ pip3 install git+https://github.com/LikaloLLC/docsie-universal-doc-importer
 ```
 
-## Migrate
-```bash
-python manage.py migrate
-```
-
-
 ## Configurations
-### 1. project_name/settings.py
+### 1. {{project_name}}/settings.py
 ```
 INSTALLED_APPS = [
     ...
@@ -93,9 +87,12 @@ UNIVERSAL_DOC_IMPORTER_PROVIDERS = {
 }
 
 ```
-
-### 2. project_name/urls.py
+### 2. Migrate
+```bash
+python manage.py migrate
 ```
-    path('importer/', include('docsie_universal_importer.urls')),
-    path('account/', include('rest_auth.urls'))
+
+### 3. {{project_name}}/urls.py
+```
+    path('importer/', include('docsie_universal_importer.urls'))
 ```
