@@ -114,7 +114,7 @@ class ConfluenceDownloader(Downloader):
         self.client = client
 
     def download_file(self, file: ConfluenceFile):
-        return self.client.get_page_content(file.id)
+        return self.client.get_page(file.id)
 
 
 class ConfluenceDownloaderAdapter(DownloaderAdapter):
