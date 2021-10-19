@@ -56,6 +56,8 @@ class OAuth2Adapter:
     def store_credentials(self, request, token: 'ConnectorToken'):
         """Save credentials in the ConnectorToken model."""
         token.provider = self.provider_id
+        if request.user.is_authenticated:
+            token.user = request.user
         token.save()
 
         return token

@@ -1,9 +1,13 @@
 import json
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from docsie_universal_importer.models import ConnectorToken
 from docsie_universal_importer.providers import registry
+from .provider import Provider
+from .serializers import ConnectorTokenSerializer
 
 
 def get_provider_cls(provider_id: str):
@@ -11,6 +15,8 @@ def get_provider_cls(provider_id: str):
 
 
 class BaseView(APIView):
+    provider: Provider
+
     @classmethod
     def provider_view(cls, provider):
         def view(request, *args, **kwargs):
@@ -40,3 +46,13 @@ class ImporterView(BaseView):
             response['data'].append(retval)
 
         return Response(data=response, status=200)
+
+
+class ConnectorTokenListView(BaseView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        queryset = ConnectorToken.objects.filter(provider=self.provider.id, user=request.user)
+        serializer = ConnectorTokenSerializer(queryset, many=True)
+
+        return Response(data=serializer.data, status=200)

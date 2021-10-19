@@ -1,8 +1,17 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
 class ConnectorToken(models.Model):
+    user = models.ForeignKey(
+        get_user_model(),
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_('user'),
+        help_text=_('Token owner')
+    )
+
     # Must contain provider id
     provider = models.CharField(
         verbose_name=_('provider'),

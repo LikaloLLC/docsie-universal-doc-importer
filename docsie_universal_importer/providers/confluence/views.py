@@ -1,4 +1,4 @@
-from docsie_universal_importer.providers.base import StorageTreeView, ImporterView
+from docsie_universal_importer.providers.base import StorageTreeView, ImporterView, ConnectorTokenListView
 from docsie_universal_importer.providers.oauth2.views import OAuth2Adapter, OAuth2LoginView, OAuth2CallbackView
 from .import_provider import ConfluenceOAuth2Provider
 
@@ -14,3 +14,4 @@ login_view = OAuth2LoginView.adapter_view(ConfluenceOAuth2Adapter)
 callback_view = OAuth2CallbackView.adapter_view(ConfluenceOAuth2Adapter)
 storage_view = StorageTreeView.provider_view(ConfluenceOAuth2Provider)
 importer_view = ImporterView.provider_view(ConfluenceOAuth2Provider)
+token_list_view = ConnectorTokenListView.provider_view(ConfluenceOAuth2Adapter)

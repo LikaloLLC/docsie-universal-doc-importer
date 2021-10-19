@@ -29,3 +29,9 @@ class DownloaderRequestSerializer(BaseRequestSerializer):
             raise AttributeError(f'`file_cls` must be given in {self.__module__}.{self.__class__.__name__}')
 
         super().__init__(*args, **kwargs)
+
+
+class ConnectorTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConnectorToken
+        fields = ['pk', 'provider', 'expires_at', 'user']
