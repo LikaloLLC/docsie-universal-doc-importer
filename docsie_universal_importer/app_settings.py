@@ -1,5 +1,7 @@
 import sys
 
+from docsie_universal_importer.utils import import_attribute
+
 
 class AppSettings:
     def __init__(self, prefix):
@@ -26,6 +28,13 @@ class AppSettings:
     @property
     def ALLOWED_EXTENSIONS(self):
         return self._setting('ALLOWED_EXTENSIONS', '*')
+
+    @property
+    def OAUTH2_CALLBACK_VIEW(self):
+        path_to_callback = self._setting('OAUTH2_CALLBACK_VIEW',
+                                         'docsie_universal_importer.providers.oauth2.views.OAuth2CallbackView')
+
+        return import_attribute(path_to_callback)
 
 
 app_settings = AppSettings("UNIVERSAL_DOC_IMPORTER_")

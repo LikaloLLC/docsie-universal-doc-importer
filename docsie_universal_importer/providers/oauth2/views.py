@@ -7,7 +7,7 @@ from allauth.socialaccount.providers.base import AuthError, ProviderException
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error, OAuth2Client
 from allauth.utils import get_request_param, build_absolute_uri
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from requests import RequestException
@@ -124,12 +124,7 @@ class OAuth2CallbackView(OAuth2View):
                 error = AuthError.CANCELLED
             else:
                 error = AuthError.UNKNOWN
-            return JsonResponse(status=400, data={
-                "auth_error": {
-                    "provider": self.adapter.provider_id,
-                    "code": error,
-                }
-            })
+            return self.on_error(request, error)
 
         client = self.get_client(request)
         try:
@@ -137,16 +132,24 @@ class OAuth2CallbackView(OAuth2View):
             token = self.adapter.parse_token(access_token)
             self.adapter.store_credentials(request, token)
 
-            return JsonResponse(status=200, data={'token': token.id})
+            return self.on_success(request, token)
         except (
                 PermissionDenied,
                 OAuth2Error,
                 RequestException,
                 ProviderException,
         ) as e:
-            return JsonResponse(status=400, data={
-                "auth_error": {
-                    "provider": self.adapter.provider_id,
-                    "error": e
-                }
-            })
+            return self.on_error(request, e)
+
+    def on_error(self, request, error: str) -> HttpResponse:
+        """Return a response on issue token error."""
+        return JsonResponse(status=400, data={
+            'auth_error': {
+                'provider': self.adapter.provider_id,
+                'code': error,
+            }
+        })
+
+    def on_success(self, request, token: 'ConnectorToken') -> HttpResponse:
+        """Return a response on issue token success."""
+        return JsonResponse(status=200, data={'token': token.id})
