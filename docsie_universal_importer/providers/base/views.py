@@ -52,7 +52,7 @@ class ConnectorTokenListView(BaseView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        queryset = ConnectorToken.objects.filter(provider=self.provider.provider_id, user=request.user)
+        queryset = ConnectorToken.objects.filter(provider=self.provider.id, user=request.user)
         serializer = ConnectorTokenSerializer(queryset, many=True)
 
         return Response(data=serializer.data, status=200)
