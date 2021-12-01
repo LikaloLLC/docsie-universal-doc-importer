@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="docsie_universal_importer",
-    version="0.3.1",
+    version="0.3.2",
     author="Likalo Limited",
     author_email="hello@docsie.io",
     description="This is an open source implementation of docsie_universal_importer",
