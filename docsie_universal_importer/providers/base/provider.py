@@ -10,39 +10,35 @@ from .adapter import StorageViewerAdapter, DownloaderAdapter
 from .downloader import Downloader
 
 
-class Provider(ABC):
+class SimpleProvider(ABC):
+    """Simple provider class that downloads content and provides with a generic interface to get it."""
     id: str = None
     slug: str = None
 
-    storage_viewer_adapter_cls: Type[StorageViewerAdapter] = None
     downloader_adapter_cls: Type[DownloaderAdapter] = None
 
     def __init__(self, request):
         required_class_attributes_checker(
-            self.__class__, 'id', 'storage_viewer_adapter_cls', 'downloader_adapter_cls'
+            self.__class__, 'id', 'downloader_adapter_cls'
         )
 
         self.request = request
-
-    @abstractmethod
-    def get_login_url(self):
-        pass
-
-    @cached_property
-    def storage_viewer_adapter(self):
-        return self.storage_viewer_adapter_cls(self.request)
 
     @cached_property
     def downloader_adapter(self):
         return self.downloader_adapter_cls(self.request)
 
     @cached_property
-    def storage_viewer(self):
-        return self.storage_viewer_adapter.get_adapted()
-
-    @cached_property
     def downloader(self) -> Downloader:
         return self.downloader_adapter.get_adapted()
+
+    def download_files(self):
+        downloader = self.downloader
+
+        for file_kwargs in self.downloader_adapter.get_files_data():
+            file = self.downloader.get_file_from_kwargs(**file_kwargs)
+
+            yield file, downloader.download_file(file)
 
     def get_import_adapter(self) -> ImportAdapter:
         settings = self.get_settings()
@@ -57,20 +53,6 @@ class Provider(ABC):
 
         return import_attribute(path_to_serializer)
 
-    def get_storage_tree(self) -> dict:
-        storage_viewer = self.storage_viewer
-        tree = storage_viewer.get_storage_tree()
-
-        return tree.to_dict()
-
-    def download_files(self):
-        downloader = self.downloader
-
-        for file_kwargs in self.downloader_adapter.get_files_data():
-            file = self.downloader.get_file_from_kwargs(**file_kwargs)
-
-            yield file, downloader.download_file(file)
-
     @classmethod
     def get_settings(cls) -> dict:
         return app_settings.PROVIDERS.get(cls.id, {})
@@ -82,3 +64,31 @@ class Provider(ABC):
     @classmethod
     def get_slug(cls):
         return cls.slug or cls.id
+
+
+class Provider(SimpleProvider):
+    """Provider class that supports viewing files in a particular storage."""
+    storage_viewer_adapter_cls: Type[StorageViewerAdapter] = None
+
+    def __init__(self, request):
+        required_class_attributes_checker('storage_viewer_adapter_cls')
+
+        super().__init__(request)
+
+    @abstractmethod
+    def get_login_url(self):
+        pass
+
+    @cached_property
+    def storage_viewer_adapter(self):
+        return self.storage_viewer_adapter_cls(self.request)
+
+    @cached_property
+    def storage_viewer(self):
+        return self.storage_viewer_adapter.get_adapted()
+
+    def get_storage_tree(self) -> dict:
+        storage_viewer = self.storage_viewer
+        tree = storage_viewer.get_storage_tree()
+
+        return tree.to_dict()

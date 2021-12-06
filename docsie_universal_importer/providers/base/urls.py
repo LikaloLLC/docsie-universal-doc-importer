@@ -3,17 +3,22 @@ from django.urls import path, include
 
 
 def default_urlpatterns(connector):
-    login_view = import_attribute(connector.get_package() + ".views.login_view")
-    callback_view = import_attribute(connector.get_package() + ".views.callback_view")
-    storage_view = import_attribute(connector.get_package() + ".views.storage_view")
-    import_view = import_attribute(connector.get_package() + ".views.importer_view")
-    token_list_view = import_attribute(connector.get_package() + ".views.token_list_view")
+    url_config = (
+        ('.views.login_view', 'login/', '_universal_importer_login'),
+        ('.views.callback_view', 'callback/', '_universal_importer_callback'),
+        ('.views.storage_view', 'storage/', '_storage'),
+        ('.views.importer_view', 'import/', '_import'),
+        ('.views.token_list_view', 'tokens/', '_token_list'),
+    )
+    urlpatterns = []
+    for view_path, url, url_suffix in url_config:
+        try:
+            view = import_attribute(connector.get_package() + view_path)
+        except AttributeError:
+            pass
+        else:
+            urlpatterns.append(
+                path(url, view, name=connector.id + url_suffix)
+            )
 
-    urlpatterns = [
-        path('login/', login_view, name=connector.id + '_universal_importer_login'),
-        path('callback/', callback_view, name=connector.id + '_universal_importer_callback'),
-        path("storage/", storage_view, name=connector.id + "_storage"),
-        path("import/", import_view, name=connector.id + "_import"),
-        path("tokens/", token_list_view, name=connector.id + "_token_list"),
-    ]
     return [path(connector.get_slug() + "/", include(urlpatterns))]

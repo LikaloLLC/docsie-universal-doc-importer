@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from docsie_universal_importer.models import ConnectorToken
 
+from docsie_universal_importer.models import ConnectorToken
 from .fields import FileField
 
 
@@ -18,7 +18,7 @@ class StorageTreeRequestSerializer(BaseRequestSerializer):
     pass
 
 
-class DownloaderRequestSerializer(BaseRequestSerializer):
+class SimpleDownloaderRequestSerializer(serializers.Serializer):
     files = serializers.ListField(child=FileField())
 
     class Meta:
@@ -29,6 +29,10 @@ class DownloaderRequestSerializer(BaseRequestSerializer):
             raise AttributeError(f'`file_cls` must be given in {self.__module__}.{self.__class__.__name__}')
 
         super().__init__(*args, **kwargs)
+
+
+class DownloaderRequestSerializer(BaseRequestSerializer, SimpleDownloaderRequestSerializer):
+    pass
 
 
 class ConnectorTokenSerializer(serializers.ModelSerializer):

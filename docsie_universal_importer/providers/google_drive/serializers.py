@@ -1,5 +1,5 @@
 from docsie_universal_importer.providers.base import StorageTreeRequestSerializer, DownloaderRequestSerializer
-from .files import GoogleDriveFile
+from .file import GoogleDriveFile
 
 
 class GoogleDriveStorageTreeRequestSerializer(StorageTreeRequestSerializer):
